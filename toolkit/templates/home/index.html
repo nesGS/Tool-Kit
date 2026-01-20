@@ -2,12 +2,13 @@
 
 {% block content %}
 <div class="text-center">
-    <h1>Bienvenido a Toolkit</h1>
+    <h1>Bienvenido a Toolkit INVOLCAN<br><img src="{{ url_for('static', filename='logo.png') }}" alt="Toolkit Logo" height="80"></h1>
     {% if current_user.is_authenticated %}
         <p>Hola, {{ current_user.username }}!</p>
         <a href="{{ url_for('home.dashboard') }}" class="btn btn-primary">Ir al Dashboard</a>
     {% else %}
-        <p>Por favor inicia sesión o regístrate</p>
+        <br>
+        <h3>Por favor inicia sesión</h3>
     {% endif %}
 </div>
 {% endblock %}

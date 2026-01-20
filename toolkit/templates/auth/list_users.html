@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Usuarios - Toolkit{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Usuarios del Sistema</h1>
+    <a href="{{ url_for('auth.create_user') }}" class="btn btn-primary">
+        + Crear Usuario
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Admin</th>
+                    <th>Creado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.is_admin %}
+                            <span class="badge bg-success">Sí</span>
+                        {% else %}
+                            <span class="badge bg-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        {% if user.id != current_user.id %}
+                        <form method="POST" action="{{ url_for('auth.delete_user', user_id=user.id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" 
+                                    onclick="return confirm('¿Estás seguro de eliminar a {{ user.username }}?')">
+                                Eliminar
+                            </button>
+                        </form>
+                        {% else %}
+                            <span class="text-muted">Tú</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
