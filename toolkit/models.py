@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # NUEVO: quién lo creó
     
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     

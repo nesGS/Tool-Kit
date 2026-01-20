@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Historial Completo - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Historial Completo - {{ station.name }}</h1>
+    <a href="{{ url_for('weather.view_station', station_id=station.id) }}" class="btn btn-secondary">
+        Volver a la Estación
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if history %}
+        <div class="timeline">
+            {% for record in history %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">
+                                {% if record.action == 'created' %}
+                                    <span class="badge bg-success">Creada</span>
+                                {% elif record.action == 'updated' %}
+                                    <span class="badge bg-primary">Actualizada</span>
+                                {% elif record.action == 'status_changed' %}
+                                    <span class="badge bg-warning">Cambio de Estado</span>
+                                {% elif record.action == 'sensor_added' %}
+                                    <span class="badge bg-info">Sensor Añadido</span>
+                                {% elif record.action == 'breakdown_reported' %}
+                                    <span class="badge bg-danger">Avería Reportada</span>
+                                {% elif record.action == 'breakdown_resolved' %}
+                                    <span class="badge bg-success">Avería Resuelta</span>
+                                {% elif record.action == 'intervention_added' %}
+                                    <span class="badge bg-primary">Intervención</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ record.action|replace('_', ' ')|capitalize }}</span>
+                                {% endif %}
+                                {{ record.description or record.action|replace('_', ' ')|capitalize }}
+                            </h6>
+                            
+                            {% if record.field_changed %}
+                            <p class="mb-1">
+                                <small class="text-muted">
+                                    Campo: <strong>{{ record.field_changed }}</strong><br>
+                                    {% if record.old_value %}Valor anterior: {{ record.old_value }}<br>{% endif %}
+                                    {% if record.new_value %}Nuevo valor: {{ record.new_value }}{% endif %}
+                                </small>
+                            </p>
+                            {% endif %}
+                            
+                            <small class="text-muted">
+                                Por: {{ record.user.username }}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">
+                                {{ record.created_at.strftime('%d/%m/%Y') }}<br>
+                                {{ record.created_at.strftime('%H:%M:%S') }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No hay historial disponible</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}{{ station.name }} - Estación Meteorológica{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ station.name }}</h1>
+    <div>
+        <a href="{{ url_for('weather.edit_station', station_id=station.id) }}" class="btn btn-warning">
+            Editar
+        </a>
+        <a href="{{ url_for('weather.list_stations') }}" class="btn btn-secondary">
+            Volver
+        </a>
+    </div>
+</div>
+
+<!-- Información General -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Información General</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Ubicación:</strong> {{ station.location }}</p>
+                {% if station.latitude and station.longitude %}
+                <p><strong>Coordenadas:</strong> {{ station.latitude }}, {{ station.longitude }}</p>
+                {% endif %}
+                <p><strong>Estado:</strong> 
+                    {% if station.status == 'activa' %}
+                        <span class="badge bg-success">Activa</span>
+                    {% elif station.status == 'averiada' %}
+                        <span class="badge bg-danger">Averiada</span>
+                    {% elif station.status == 'mantenimiento' %}
+                        <span class="badge bg-warning">Mantenimiento</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-6">
+                {% if station.installation_date %}
+                <p><strong>Fecha de instalación:</strong> {{ station.installation_date.strftime('%d/%m/%Y') }}</p>
+                {% endif %}
+                <p><strong>Creada:</strong> {{ station.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                <p><strong>Última actualización:</strong> {{ station.updated_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Averías Activas -->
+{% if station.active_breakdowns %}
+<div class="card mb-4 border-danger">
+    <div class="card-header bg-danger text-white">
+        <h5>⚠ Averías Activas ({{ station.active_breakdowns|length }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="list-group">
+            {% for breakdown in station.active_breakdowns %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6>{{ breakdown.title }}</h6>
+                        <p class="mb-1">{{ breakdown.description }}</p>
+                        <small>
+                            Reportada: {{ breakdown.reported_date.strftime('%d/%m/%Y %H:%M') }} 
+                            por {{ breakdown.reporter.username }}
+                            | Severidad: 
+                            {% if breakdown.severity == 'crítica' %}
+                                <span class="badge bg-danger">Crítica</span>
+                            {% elif breakdown.severity == 'alta' %}
+                                <span class="badge bg-warning">Alta</span>
+                            {% else %}
+                                <span class="badge bg-info">{{ breakdown.severity|capitalize }}</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    <a href="{{ url_for('weather.resolve_breakdown', breakdown_id=breakdown.id) }}" 
+                       class="btn btn-sm btn-success">
+                        Resolver
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Sensores -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Sensores ({{ station.sensors|length }})</h5>
+        <a href="{{ url_for('weather.add_sensor', station_id=station.id) }}" class="btn btn-sm btn-primary">
+            + Añadir Sensor
+        </a>
+    </div>
+    <div class="card-body">
+        {% if station.sensors %}
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Modelo</th>
+                        <th>Serie</th>
+                        <th>Estado</th>
+                        <th>Instalación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sensor in station.sensors %}
+                    <tr>
+                        <td>{{ sensor.sensor_type|capitalize }}</td>
+                        <td>{{ sensor.model or '-' }}</td>
+                        <td>{{ sensor.serial_number or '-' }}</td>
+                        <td>
+                            {% if sensor.status == 'operativo' %}
+                                <span class="badge bg-success">Operativo</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ sensor.status|capitalize }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ sensor.installation_date.strftime('%d/%m/%Y') if sensor.installation_date else '-' }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<p class="text-muted">No hay sensores registrados</p>
+{% endif %}
+</div>
+</div>
+<!-- Router -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Router de Conectividad</h5>
+        <a href="{{ url_for('weather.configure_router', station_id=station.id) }}" class="btn btn-sm btn-primary">
+            {% if station.router %}Editar{% else %}Configurar{% endif %}
+        </a>
+    </div>
+    <div class="card-body">
+        {% if station.router %}
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Modelo:</strong> {{ station.router.model }}</p>
+                <p><strong>IP:</strong> {{ station.router.ip_address or '-' }}</p>
+                <p><strong>MAC:</strong> {{ station.router.mac_address or '-' }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Serie:</strong> {{ station.router.serial_number or '-' }}</p>
+                <p><strong>Firmware:</strong> {{ station.router.firmware_version or '-' }}</p>
+                <p><strong>Estado:</strong> 
+                    {% if station.router.status == 'online' %}
+                        <span class="badge bg-success">Online</span>
+                    {% else %}
+                        <span class="badge bg-danger">{{ station.router.status|capitalize }}</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted">No hay router configurado</p>
+        {% endif %}
+    </div>
+</div>
+<!-- Detalles Técnicos -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Detalles Técnicos</h5>
+        <a href="{{ url_for('weather.add_technical_detail', station_id=station.id) }}" class="btn btn-sm btn-primary">
+            + Añadir Detalle
+        </a>
+    </div>
+    <div class="card-body">
+        {% if station.technical_details %}
+        <table class="table table-sm">
+            <tbody>
+                {% for detail in station.technical_details %}
+                <tr>
+                    <td><strong>{{ detail.key }}</strong></td>
+                    <td>{{ detail.value }}</td>
+                    <td><small class="text-muted">{{ detail.detail_type }}</small></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted">No hay detalles técnicos registrados</p>
+        {% endif %}
+    </div>
+</div>
+<!-- Historial de Averías -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Historial de Averías</h5>
+        <a href="{{ url_for('weather.report_breakdown', station_id=station.id) }}" class="btn btn-sm btn-danger">
+            + Reportar Avería
+        </a>
+    </div>
+    <div class="card-body">
+        {% if station.breakdowns %}
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Severidad</th>
+                        <th>Reportada</th>
+                        <th>Resuelta</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for breakdown in station.breakdowns|reverse %}
+                    <tr>
+                        <td>{{ breakdown.title }}</td>
+                        <td>
+                            {% if breakdown.severity == 'crítica' %}
+                                <span class="badge bg-danger">Crítica</span>
+                            {% elif breakdown.severity == 'alta' %}
+                                <span class="badge bg-warning">Alta</span>
+                            {% elif breakdown.severity == 'media' %}
+                                <span class="badge bg-info">Media</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Baja</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ breakdown.reported_date.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ breakdown.resolved_date.strftime('%d/%m/%Y') if breakdown.resolved_date else '-' }}</td>
+                        <td>
+                            {% if breakdown.resolved %}
+                                <span class="badge bg-success">Resuelta</span>
+                            {% else %}
+                                <span class="badge bg-danger">Activa</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No hay averías registradas</p>
+        {% endif %}
+    </div>
+</div>
+<!-- Intervenciones -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Historial de Intervenciones</h5>
+        <a href="{{ url_for('weather.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
+            + Registrar Intervención
+        </a>
+    </div>
+    <div class="card-body">
+        {% if station.interventions %}
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Título</th>
+                        <th>Técnico</th>
+                        <th>Duración</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for intervention in station.interventions|reverse %}
+                    <tr>
+                        <td>{{ intervention.intervention_date.strftime('%d/%m/%Y') }}</td>
+                        <td>{{ intervention.intervention_type|capitalize }}</td>
+                        <td>{{ intervention.title }}</td>
+                        <td>{{ intervention.technician_name or intervention.technician.username }}</td>
+                        <td>{{ intervention.duration_hours }}h</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No hay intervenciones registradas</p>
+        {% endif %}
+    </div>
+</div>
+<!-- Historial de Cambios -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Historial de Cambios</h5>
+        <a href="{{ url_for('weather.view_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
+            Ver Completo
+        </a>
+    </div>
+    <div class="card-body">
+        {% if station.history %}
+        <div class="list-group">
+            {% for record in station.history[:5] %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong>{{ record.action|replace('_', ' ')|capitalize }}</strong>
+                        {% if record.description %}
+                        - {{ record.description }}
+                        {% endif %}
+                    </div>
+                    <small class="text-muted">{{ record.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                </div>
+                <small class="text-muted">Por: {{ record.user.username }}</small>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No hay historial disponible</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

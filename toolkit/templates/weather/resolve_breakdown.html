@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Resolver Avería{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-success">
+            <div class="card-header bg-success text-white">
+                <h3>Resolver Avería</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>{{ breakdown.title }}</h5>
+                    <p><strong>Descripción:</strong> {{ breakdown.description }}</p>
+                    <p><strong>Severidad:</strong> 
+                        <span class="badge bg-{{ 'danger' if breakdown.severity == 'crítica' else 'warning' if breakdown.severity == 'alta' else 'info' }}">
+                            {{ breakdown.severity|capitalize }}
+                        </span>
+                    </p>
+                    <p><strong>Reportada:</strong> {{ breakdown.reported_date.strftime('%d/%m/%Y %H:%M') }} por {{ breakdown.reporter.username }}</p>
+                </div>
+                
+                <hr>
+                
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="resolution_notes" class="form-label">Notas de Resolución *</label>
+                        <textarea class="form-control" id="resolution_notes" name="resolution_notes" rows="5" 
+                                  placeholder="Describe cómo se resolvió el problema, piezas reemplazadas, acciones tomadas, etc." required></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong>Info:</strong> Al marcar esta avería como resuelta, se registrará la fecha y hora actual, y tu usuario como quien la resolvió.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('weather.view_station', station_id=breakdown.station_id) }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Marcar como Resuelta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Reportar Avería - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3>Reportar Avería - {{ station.name }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Título de la Avería *</label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               placeholder="Ej: Sensor de temperatura sin lectura" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="severity" class="form-label">Severidad *</label>
+                        <select class="form-control" id="severity" name="severity" required>
+                            <option value="baja">Baja - No afecta funcionamiento crítico</option>
+                            <option value="media" selected>Media - Afecta parcialmente</option>
+                            <option value="alta">Alta - Afecta funcionalidad importante</option>
+                            <option value="crítica">Crítica - Estación inoperativa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descripción Detallada *</label>
+                        <textarea class="form-control" id="description" name="description" rows="5" 
+                                  placeholder="Describe el problema, cuándo se detectó, síntomas, etc." required></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>Nota:</strong> Esta avería quedará registrada como activa hasta que sea resuelta.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('weather.view_station', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-danger">Reportar Avería</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

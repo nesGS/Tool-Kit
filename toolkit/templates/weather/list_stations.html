@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Estaciones Meteorológicas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Estaciones Meteorológicas</h1>
+    <a href="{{ url_for('weather.create_station') }}" class="btn btn-primary">
+        + Nueva Estación
+    </a>
+</div>
+
+<div class="row">
+    {% for station in stations %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ station.name }}</h5>
+                {% if station.status == 'activa' %}
+                    <span class="badge bg-success">Activa</span>
+                {% elif station.status == 'averiada' %}
+                    <span class="badge bg-danger">Averiada</span>
+                {% elif station.status == 'mantenimiento' %}
+                    <span class="badge bg-warning">Mantenimiento</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <p><strong>Ubicación:</strong> {{ station.location }}</p>
+                <p><strong>Sensores:</strong> {{ station.sensors|length }}</p>
+                {% if station.has_active_breakdowns %}
+                    <div class="alert alert-danger py-2">
+                        <small>⚠ {{ station.active_breakdowns|length }} avería(s) activa(s)</small>
+                    </div>
+                {% endif %}
+                <a href="{{ url_for('weather.view_station', station_id=station.id) }}" class="btn btn-sm btn-primary">
+                    Ver Detalles
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            No hay estaciones registradas. <a href="{{ url_for('weather.create_station') }}">Crear la primera</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
