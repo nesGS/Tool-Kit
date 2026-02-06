@@ -9,7 +9,7 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home.dashboard'))
+        return redirect(url_for('home.index'))
     
     if request.method == 'POST':
         username = request.form.get('username')
@@ -21,7 +21,7 @@ def login():
             login_user(user)
             flash('Inicio de sesión exitoso', 'success')
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home.dashboard'))
+            return redirect(next_page) if next_page else redirect(url_for('home.index'))
         else:
             flash('Usuario o contraseña incorrectos', 'danger')
     

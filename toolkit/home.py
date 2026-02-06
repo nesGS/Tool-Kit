@@ -7,7 +7,3 @@ home = Blueprint('home', __name__)
 def index():
     return render_template('home/index.html')
 
-@home.route('/dashboard')
-@login_required
-def dashboard():
-    return render_template('home/dashboard.html')
