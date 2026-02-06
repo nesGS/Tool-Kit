@@ -24,8 +24,8 @@ def create_app(config_name='default'):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
     
-    from .weather import weather as weather_blueprint  # NUEVO
-    app.register_blueprint(weather_blueprint, url_prefix='/weather')  # NUEVO
+    from .station import stations as station_blueprint  # NUEVO
+    app.register_blueprint(station_blueprint, url_prefix='/station')  # NUEVO
     
     # Crear tablas si no existen
     with app.app_context():

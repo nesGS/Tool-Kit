@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Estaciones INVOLCAN</h1>
-    <a href="{{ url_for('weather.create_station') }}" class="btn btn-primary">
+    <a href="{{ url_for('stations.create_station') }}" class="btn btn-primary">
         + Nueva Estación
     </a>
 </div>
@@ -34,7 +34,7 @@
                         <small>⚠ {{ station.active_breakdowns|length }} avería(s) activa(s)</small>
                     </div>
                 {% endif %}
-                <a href="{{ url_for('weather.view_station', station_id=station.id) }}" class="btn btn-sm btn-primary">
+                <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-sm btn-primary">
                     Ver Detalles
                 </a>
             </div>
@@ -43,7 +43,7 @@
     {% else %}
     <div class="col-12">
         <div class="alert alert-info">
-            No hay estaciones registradas. <a href="{{ url_for('weather.create_station') }}">Crear la primera</a>
+            No hay estaciones registradas. <a href="{{ url_for('stations.create_station') }}">Crear la primera</a>
         </div>
     </div>
     {% endfor %}

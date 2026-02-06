@@ -6,10 +6,10 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>{{ station.name }}</h1>
     <div>
-        <a href="{{ url_for('weather.edit_station', station_id=station.id) }}" class="btn btn-warning">
+        <a href="{{ url_for('stations.edit_station', station_id=station.id) }}" class="btn btn-warning">
             Editar
         </a>
-        <a href="{{ url_for('weather.list_stations') }}" class="btn btn-secondary">
+        <a href="{{ url_for('stations.list_stations') }}" class="btn btn-secondary">
             Volver
         </a>
     </div>
@@ -77,7 +77,7 @@
                             {% endif %}
                         </small>
                     </div>
-                    <a href="{{ url_for('weather.resolve_breakdown', breakdown_id=breakdown.id) }}" 
+                    <a href="{{ url_for('stations.resolve_breakdown', breakdown_id=breakdown.id) }}" 
                        class="btn btn-sm btn-success">
                         Resolver
                     </a>
@@ -93,7 +93,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Sensores ({{ station.sensors|length }})</h5>
-        <a href="{{ url_for('weather.add_sensor', station_id=station.id) }}" class="btn btn-sm btn-primary">
+        <a href="{{ url_for('stations.add_sensor', station_id=station.id) }}" class="btn btn-sm btn-primary">
             + Añadir Sensor
         </a>
     </div>
@@ -138,7 +138,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Router de Conectividad</h5>
-        <a href="{{ url_for('weather.configure_router', station_id=station.id) }}" class="btn btn-sm btn-primary">
+        <a href="{{ url_for('stations.configure_router', station_id=station.id) }}" class="btn btn-sm btn-primary">
             {% if station.router %}Editar{% else %}Configurar{% endif %}
         </a>
     </div>
@@ -171,7 +171,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Detalles Técnicos</h5>
-        <a href="{{ url_for('weather.add_technical_detail', station_id=station.id) }}" class="btn btn-sm btn-primary">
+        <a href="{{ url_for('stations.add_technical_detail', station_id=station.id) }}" class="btn btn-sm btn-primary">
             + Añadir Detalle
         </a>
     </div>
@@ -197,7 +197,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Averías</h5>
-        <a href="{{ url_for('weather.report_breakdown', station_id=station.id) }}" class="btn btn-sm btn-danger">
+        <a href="{{ url_for('stations.report_breakdown', station_id=station.id) }}" class="btn btn-sm btn-danger">
             + Reportar Avería
         </a>
     </div>
@@ -252,7 +252,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Intervenciones</h5>
-        <a href="{{ url_for('weather.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
+        <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
             + Registrar Intervención
         </a>
     </div>
@@ -291,7 +291,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Cambios</h5>
-        <a href="{{ url_for('weather.view_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
+        <a href="{{ url_for('stations.view_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
             Ver Completo
         </a>
     </div>

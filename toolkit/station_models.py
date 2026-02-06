@@ -2,8 +2,8 @@ from . import db
 from datetime import datetime
 from flask_login import current_user
 
-class WeatherStation(db.Model):
-    __tablename__ = 'weather_station'
+class Station(db.Model):
+    __tablename__ = 'Station'
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -36,14 +36,14 @@ class WeatherStation(db.Model):
         return len(self.active_breakdowns) > 0
     
     def __repr__(self):
-        return f'<WeatherStation {self.name}>'
+        return f'<Station {self.name}>'
 
 
 class Sensor(db.Model):
     __tablename__ = 'sensor'
     
     id = db.Column(db.Integer, primary_key=True)
-    station_id = db.Column(db.Integer, db.ForeignKey('weather_station.id'), nullable=False)
+    station_id = db.Column(db.Integer, db.ForeignKey('Station.id'), nullable=False)
     sensor_type = db.Column(db.String(50), nullable=False)  # temperatura, humedad, presión, viento, lluvia
     model = db.Column(db.String(100), nullable=True)
     serial_number = db.Column(db.String(100), nullable=True)
@@ -62,7 +62,7 @@ class Router(db.Model):
     __tablename__ = 'router'
     
     id = db.Column(db.Integer, primary_key=True)
-    station_id = db.Column(db.Integer, db.ForeignKey('weather_station.id'), nullable=False)
+    station_id = db.Column(db.Integer, db.ForeignKey('Station.id'), nullable=False)
     model = db.Column(db.String(100), nullable=False)
     ip_address = db.Column(db.String(45), nullable=True)  # IPv4 o IPv6
     mac_address = db.Column(db.String(17), nullable=True)
@@ -81,7 +81,7 @@ class TechnicalDetail(db.Model):
     __tablename__ = 'technical_detail'
     
     id = db.Column(db.Integer, primary_key=True)
-    station_id = db.Column(db.Integer, db.ForeignKey('weather_station.id'), nullable=False)
+    station_id = db.Column(db.Integer, db.ForeignKey('Station.id'), nullable=False)
     detail_type = db.Column(db.String(50), nullable=False)  # alimentación, conectividad, estructura, etc.
     key = db.Column(db.String(100), nullable=False)  # ej: "Tipo de alimentación"
     value = db.Column(db.Text, nullable=False)  # ej: "Solar + Batería de respaldo"
@@ -97,7 +97,7 @@ class Breakdown(db.Model):
     __tablename__ = 'breakdown'
     
     id = db.Column(db.Integer, primary_key=True)
-    station_id = db.Column(db.Integer, db.ForeignKey('weather_station.id'), nullable=False)
+    station_id = db.Column(db.Integer, db.ForeignKey('Station.id'), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     severity = db.Column(db.String(20), default='media')  # baja, media, alta, crítica
@@ -131,7 +131,7 @@ class Intervention(db.Model):
     __tablename__ = 'intervention'
     
     id = db.Column(db.Integer, primary_key=True)
-    station_id = db.Column(db.Integer, db.ForeignKey('weather_station.id'), nullable=False)
+    station_id = db.Column(db.Integer, db.ForeignKey('Station.id'), nullable=False)
     intervention_type = db.Column(db.String(50), nullable=False)  # mantenimiento, reparación, calibración, instalación
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -154,7 +154,7 @@ class StationHistory(db.Model):
     __tablename__ = 'station_history'
     
     id = db.Column(db.Integer, primary_key=True)
-    station_id = db.Column(db.Integer, db.ForeignKey('weather_station.id'), nullable=False)
+    station_id = db.Column(db.Integer, db.ForeignKey('Station.id'), nullable=False)
     action = db.Column(db.String(50), nullable=False)  # created, updated, status_changed, etc.
     field_changed = db.Column(db.String(100), nullable=True)  # Campo que cambió
     old_value = db.Column(db.Text, nullable=True)

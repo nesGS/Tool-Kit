@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from . import db
-from .weather_models import WeatherStation, Sensor, Router, TechnicalDetail, Breakdown, Intervention, StationHistory
+from .station_models import Station, Sensor, Router, TechnicalDetail, Breakdown, Intervention, StationHistory
 from datetime import datetime
 
-weather = Blueprint('weather', __name__)
+stations = Blueprint('stations', __name__)
 
 # Función auxiliar para registrar cambios
 def log_change(station_id, action, field=None, old_value=None, new_value=None, description=None):
@@ -20,21 +20,21 @@ def log_change(station_id, action, field=None, old_value=None, new_value=None, d
     db.session.add(history)
 
 # Lista de estaciones
-@weather.route('/stations')
+@stations.route('/stations')
 @login_required
 def list_stations():
-    stations = WeatherStation.query.all()
-    return render_template('weather/list_stations.html', stations=stations)
+    stations = Station.query.all()
+    return render_template('stations/list_stations.html', stations=stations)
 
 # Ver detalle de una estación
-@weather.route('/stations/<int:station_id>')
+@stations.route('/stations/<int:station_id>')
 @login_required
 def view_station(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
-    return render_template('weather/view_station.html', station=station)
+    station = Station.query.get_or_404(station_id)
+    return render_template('stations/view_station.html', station=station)
 
 # Crear nueva estación
-@weather.route('/stations/new', methods=['GET', 'POST'])
+@stations.route('/stations/new', methods=['GET', 'POST'])
 @login_required
 def create_station():
     if request.method == 'POST':
@@ -46,12 +46,12 @@ def create_station():
         installation_date = request.form.get('installation_date')
         
         # Validar que no exista
-        if WeatherStation.query.filter_by(name=name).first():
+        if Station.query.filter_by(name=name).first():
             flash('Ya existe una estación con ese nombre', 'danger')
-            return redirect(url_for('weather.create_station'))
+            return redirect(url_for('stations.create_station'))
         
         # Crear estación
-        station = WeatherStation(
+        station = Station(
             name=name,
             location=location,
             latitude=float(latitude) if latitude else None,
@@ -69,15 +69,15 @@ def create_station():
         db.session.commit()
         
         flash(f'Estación {name} creada exitosamente', 'success')
-        return redirect(url_for('weather.view_station', station_id=station.id))
+        return redirect(url_for('stations.view_station', station_id=station.id))
     
-    return render_template('weather/create_station.html')
+    return render_template('stations/create_station.html')
 
 # Editar estación
-@weather.route('/stations/<int:station_id>/edit', methods=['GET', 'POST'])
+@stations.route('/stations/<int:station_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_station(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     
     if request.method == 'POST':
         old_status = station.status
@@ -99,15 +99,15 @@ def edit_station(station_id):
         
         db.session.commit()
         flash('Estación actualizada exitosamente', 'success')
-        return redirect(url_for('weather.view_station', station_id=station.id))
+        return redirect(url_for('stations.view_station', station_id=station.id))
     
-    return render_template('weather/edit_station.html', station=station)
+    return render_template('stations/edit_station.html', station=station)
 
 # Añadir sensor
-@weather.route('/stations/<int:station_id>/sensors/add', methods=['GET', 'POST'])
+@stations.route('/stations/<int:station_id>/sensors/add', methods=['GET', 'POST'])
 @login_required
 def add_sensor(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     
     if request.method == 'POST':
         sensor = Sensor(
@@ -124,15 +124,15 @@ def add_sensor(station_id):
         db.session.commit()
         
         flash('Sensor añadido exitosamente', 'success')
-        return redirect(url_for('weather.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station', station_id=station_id))
     
-    return render_template('weather/add_sensor.html', station=station)
+    return render_template('stations/add_sensor.html', station=station)
 
 # Configurar router
-@weather.route('/stations/<int:station_id>/router', methods=['GET', 'POST'])
+@stations.route('/stations/<int:station_id>/router', methods=['GET', 'POST'])
 @login_required
 def configure_router(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     router = station.router
     
     if request.method == 'POST':
@@ -151,15 +151,15 @@ def configure_router(station_id):
         db.session.commit()
         
         flash('Router configurado exitosamente', 'success')
-        return redirect(url_for('weather.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station', station_id=station_id))
     
-    return render_template('weather/configure_router.html', station=station, router=router)
+    return render_template('stations/configure_router.html', station=station, router=router)
 
 # Añadir detalle técnico
-@weather.route('/stations/<int:station_id>/details/add', methods=['GET', 'POST'])
+@stations.route('/stations/<int:station_id>/details/add', methods=['GET', 'POST'])
 @login_required
 def add_technical_detail(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     
     if request.method == 'POST':
         detail = TechnicalDetail(
@@ -174,15 +174,15 @@ def add_technical_detail(station_id):
         db.session.commit()
         
         flash('Detalle técnico añadido', 'success')
-        return redirect(url_for('weather.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station', station_id=station_id))
     
-    return render_template('weather/add_technical_detail.html', station=station)
+    return render_template('stations/add_technical_detail.html', station=station)
 
 # Reportar avería
-@weather.route('/stations/<int:station_id>/breakdowns/report', methods=['GET', 'POST'])
+@stations.route('/stations/<int:station_id>/breakdowns/report', methods=['GET', 'POST'])
 @login_required
 def report_breakdown(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     
     if request.method == 'POST':
         breakdown = Breakdown(
@@ -198,12 +198,12 @@ def report_breakdown(station_id):
         db.session.commit()
         
         flash('Avería reportada exitosamente', 'warning')
-        return redirect(url_for('weather.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station', station_id=station_id))
     
-    return render_template('weather/report_breakdown.html', station=station)
+    return render_template('stations/report_breakdown.html', station=station)
 
 # Resolver avería
-@weather.route('/breakdowns/<int:breakdown_id>/resolve', methods=['GET', 'POST'])
+@stations.route('/breakdowns/<int:breakdown_id>/resolve', methods=['GET', 'POST'])
 @login_required
 def resolve_breakdown(breakdown_id):
     breakdown = Breakdown.query.get_or_404(breakdown_id)
@@ -218,15 +218,15 @@ def resolve_breakdown(breakdown_id):
         db.session.commit()
         
         flash('Avería marcada como resuelta', 'success')
-        return redirect(url_for('weather.view_station', station_id=breakdown.station_id))
+        return redirect(url_for('stations.view_station', station_id=breakdown.station_id))
     
-    return render_template('weather/resolve_breakdown.html', breakdown=breakdown)
+    return render_template('stations/resolve_breakdown.html', breakdown=breakdown)
 
 # Registrar intervención
-@weather.route('/stations/<int:station_id>/interventions/add', methods=['GET', 'POST'])
+@stations.route('/stations/<int:station_id>/interventions/add', methods=['GET', 'POST'])
 @login_required
 def add_intervention(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     
     if request.method == 'POST':
         intervention = Intervention(
@@ -246,14 +246,14 @@ def add_intervention(station_id):
         db.session.commit()
         
         flash('Intervención registrada exitosamente', 'success')
-        return redirect(url_for('weather.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station', station_id=station_id))
     
-    return render_template('weather/add_intervention.html', station=station, now=datetime.now())
+    return render_template('stations/add_intervention.html', station=station, now=datetime.now())
 
 # Ver historial completo
-@weather.route('/stations/<int:station_id>/history')
+@stations.route('/stations/<int:station_id>/history')
 @login_required
 def view_history(station_id):
-    station = WeatherStation.query.get_or_404(station_id)
+    station = Station.query.get_or_404(station_id)
     history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).all()
-    return render_template('weather/view_history.html', station=station, history=history)
+    return render_template('stations/view_history.html', station=station, history=history)
