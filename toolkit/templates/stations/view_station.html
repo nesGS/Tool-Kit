@@ -274,7 +274,6 @@
                         <th>Tipo</th>
                         <th>Título</th>
                         <th>Técnico</th>
-                        <th>Duración</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -284,7 +283,6 @@
                         <td>{{ intervention.intervention_type|capitalize }}</td>
                         <td>{{ intervention.title }}</td>
                         <td>{{ intervention.technician_name or intervention.technician.username }}</td>
-                        <td>{{ intervention.duration_hours }}h</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -304,15 +302,36 @@
         </a>
     </div>
     <div class="card-body">
-        {% if station.history %}
+        {% if recent_history %}
         <div class="list-group">
-            {% for record in station.history[:5] %}
+            {% for record in recent_history %}
             <div class="list-group-item">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <strong>{{ record.action|replace('_', ' ')|capitalize }}</strong>
+                        {% if record.action == 'created' %}
+                            <span class="badge bg-success">Creada</span>
+                        {% elif record.action == 'updated' %}
+                            <span class="badge bg-primary">Actualizada</span>
+                        {% elif record.action == 'status_changed' %}
+                            <span class="badge bg-warning">Cambio de Estado</span>
+                        {% elif record.action == 'sensor_added' %}
+                            <span class="badge bg-info">Sensor Añadido</span>
+                        {% elif record.action == 'router_configured' %}
+                            <span class="badge bg-info">Router Configurado</span>
+                        {% elif record.action == 'detail_added' %}
+                            <span class="badge bg-info">Detalle Añadido</span>
+                        {% elif record.action == 'breakdown_reported' %}
+                            <span class="badge bg-danger">Avería Reportada</span>
+                        {% elif record.action == 'breakdown_resolved' %}
+                            <span class="badge bg-success">Avería Resuelta</span>
+                        {% elif record.action == 'intervention_added' %}
+                            <span class="badge bg-primary">Intervención</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ record.action|replace('_', ' ')|capitalize }}</span>
+                        {% endif %}
+                        
                         {% if record.description %}
-                        - {{ record.description }}
+                            <strong>{{ record.description }}</strong>
                         {% endif %}
                     </div>
                     <small class="text-muted">{{ record.created_at.strftime('%d/%m/%Y %H:%M') }}</small>

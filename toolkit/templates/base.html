@@ -12,6 +12,7 @@
         <a class="navbar-brand" href="{{ url_for('home.index') }}">INVOLtool</a>
         <div class="navbar-nav ms-auto">
             {% if current_user.is_authenticated %}
+                <a class="nav-link" href="http://193.147.109.7:2708/html/slcheck.php" target="_blank" rel="noopener noreferrer">Red Sísmica</a>
                 <a class="nav-link" href="{{ url_for('stations.list_stations') }}">Estaciones</a>
                 {% if current_user.is_admin %}
                     <a class="nav-link" href="{{ url_for('auth.list_users') }}">Usuarios</a>

@@ -32,7 +32,9 @@ def list_stations():
 @login_required
 def view_station(station_id):
     station = Station.query.get_or_404(station_id)
-    return render_template('stations/view_station.html', station=station)
+    # Obtener los últimos 5 registros de historial ordenados por fecha descendente
+    recent_history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).limit(5).all()
+    return render_template('stations/view_station.html', station=station, recent_history=recent_history)
 
 # Crear nueva estación
 @stations.route('/new', methods=['GET', 'POST'])
@@ -248,8 +250,6 @@ def add_intervention(station_id):
             title=request.form.get('title'),
             description=request.form.get('description'),
             intervention_date=datetime.strptime(request.form.get('intervention_date'), '%Y-%m-%d') if request.form.get('intervention_date') else datetime.utcnow(),
-            duration_hours=float(request.form.get('duration_hours')) if request.form.get('duration_hours') else None,
-            cost=float(request.form.get('cost')) if request.form.get('cost') else None,
             technician_name=request.form.get('technician_name'),
             performed_by=current_user.id
         )

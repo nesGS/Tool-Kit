@@ -44,24 +44,12 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="technician_name" class="form-label">Nombre del Técnico</label>
                             <input type="text" class="form-control" id="technician_name" name="technician_name" 
                                    placeholder="Nombre del técnico que realizó la intervención">
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="duration_hours" class="form-label">Duración (horas)</label>
-                            <input type="number" step="0.5" class="form-control" id="duration_hours" name="duration_hours" 
-                                   placeholder="Ej: 2.5">
-                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="cost" class="form-label">Coste (€)</label>
-                        <input type="number" step="0.01" class="form-control" id="cost" name="cost" 
-                               placeholder="Coste de la intervención">
-                    </div>
-                    
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Registrar Intervención</button>

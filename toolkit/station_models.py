@@ -136,8 +136,6 @@ class Intervention(db.Model):
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
     intervention_date = db.Column(db.DateTime, default=datetime.utcnow)
-    duration_hours = db.Column(db.Float, nullable=True)  # Duración en horas
-    cost = db.Column(db.Float, nullable=True)
     technician_name = db.Column(db.String(100), nullable=True)
     
     performed_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
