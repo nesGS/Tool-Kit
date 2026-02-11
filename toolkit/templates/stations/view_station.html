@@ -9,6 +9,14 @@
         <a href="{{ url_for('stations.edit_station', station_id=station.id) }}" class="btn btn-warning">
             Editar
         </a>
+        {% if current_user.is_admin %}
+        <form method="POST"
+              action="{{ url_for('stations.delete_station', station_id=station.id) }}"
+              class="d-inline"
+              onsubmit="return confirm('¿Seguro que quieres eliminar esta estación? Esta acción no se puede deshacer.');">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+        {% endif %}
         <a href="{{ url_for('stations.list_stations') }}" class="btn btn-secondary">
             Volver
         </a>

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from . import db
 from .station_models import Station, Sensor, Router, TechnicalDetail, Breakdown, Intervention, StationHistory
+from .utils import admin_required
 from datetime import datetime
 
 stations = Blueprint('stations', __name__)
@@ -20,21 +21,21 @@ def log_change(station_id, action, field=None, old_value=None, new_value=None, d
     db.session.add(history)
 
 # Lista de estaciones
-@stations.route('/stations')
+@stations.route('/')
 @login_required
 def list_stations():
     stations = Station.query.all()
     return render_template('stations/list_stations.html', stations=stations)
 
 # Ver detalle de una estación
-@stations.route('/stations/<int:station_id>')
+@stations.route('/<int:station_id>')
 @login_required
 def view_station(station_id):
     station = Station.query.get_or_404(station_id)
     return render_template('stations/view_station.html', station=station)
 
 # Crear nueva estación
-@stations.route('/stations/new', methods=['GET', 'POST'])
+@stations.route('/new', methods=['GET', 'POST'])
 @login_required
 def create_station():
     if request.method == 'POST':
@@ -74,7 +75,7 @@ def create_station():
     return render_template('stations/create_station.html')
 
 # Editar estación
-@stations.route('/stations/<int:station_id>/edit', methods=['GET', 'POST'])
+@stations.route('/<int:station_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_station(station_id):
     station = Station.query.get_or_404(station_id)
@@ -103,8 +104,20 @@ def edit_station(station_id):
     
     return render_template('stations/edit_station.html', station=station)
 
+# Eliminar estación (solo admin)
+@stations.route('/<int:station_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_station(station_id):
+    station = Station.query.get_or_404(station_id)
+    station_name = station.name
+    db.session.delete(station)
+    db.session.commit()
+    flash(f'Estación {station_name} eliminada exitosamente', 'success')
+    return redirect(url_for('stations.list_stations'))
+
 # Añadir sensor
-@stations.route('/stations/<int:station_id>/sensors/add', methods=['GET', 'POST'])
+@stations.route('/<int:station_id>/sensors/add', methods=['GET', 'POST'])
 @login_required
 def add_sensor(station_id):
     station = Station.query.get_or_404(station_id)
@@ -129,7 +142,7 @@ def add_sensor(station_id):
     return render_template('stations/add_sensor.html', station=station)
 
 # Configurar router
-@stations.route('/stations/<int:station_id>/router', methods=['GET', 'POST'])
+@stations.route('/<int:station_id>/router', methods=['GET', 'POST'])
 @login_required
 def configure_router(station_id):
     station = Station.query.get_or_404(station_id)
@@ -156,7 +169,7 @@ def configure_router(station_id):
     return render_template('stations/configure_router.html', station=station, router=router)
 
 # Añadir detalle técnico
-@stations.route('/stations/<int:station_id>/details/add', methods=['GET', 'POST'])
+@stations.route('/<int:station_id>/details/add', methods=['GET', 'POST'])
 @login_required
 def add_technical_detail(station_id):
     station = Station.query.get_or_404(station_id)
@@ -179,7 +192,7 @@ def add_technical_detail(station_id):
     return render_template('stations/add_technical_detail.html', station=station)
 
 # Reportar avería
-@stations.route('/stations/<int:station_id>/breakdowns/report', methods=['GET', 'POST'])
+@stations.route('/<int:station_id>/breakdowns/report', methods=['GET', 'POST'])
 @login_required
 def report_breakdown(station_id):
     station = Station.query.get_or_404(station_id)
@@ -223,7 +236,7 @@ def resolve_breakdown(breakdown_id):
     return render_template('stations/resolve_breakdown.html', breakdown=breakdown)
 
 # Registrar intervención
-@stations.route('/stations/<int:station_id>/interventions/add', methods=['GET', 'POST'])
+@stations.route('/<int:station_id>/interventions/add', methods=['GET', 'POST'])
 @login_required
 def add_intervention(station_id):
     station = Station.query.get_or_404(station_id)
@@ -251,7 +264,7 @@ def add_intervention(station_id):
     return render_template('stations/add_intervention.html', station=station, now=datetime.now())
 
 # Ver historial completo
-@stations.route('/stations/<int:station_id>/history')
+@stations.route('/<int:station_id>/history')
 @login_required
 def view_history(station_id):
     station = Station.query.get_or_404(station_id)
