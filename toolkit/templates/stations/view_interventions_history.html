@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Historial Completo de Intervenciones - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Historial Completo de Intervenciones</h1>
+    <div>
+        <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-primary">+ Registrar Intervención</a>
+        <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-secondary">Volver a Estación</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p class="mb-0"><strong>Estación:</strong> {{ station.name }}</p>
+    </div>
+</div>
+
+{% if interventions %}
+    {% for intervention in interventions %}
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>{{ intervention.title }}</strong>
+            <span class="badge bg-primary">{{ intervention.intervention_type|capitalize }}</span>
+        </div>
+        <div class="card-body">
+            <p><strong>Descripción:</strong> {{ intervention.description }}</p>
+            <p><strong>Fecha de intervención:</strong> {{ intervention.intervention_date.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p><strong>Técnico:</strong> {{ intervention.technician_name or intervention.technician.username }}</p>
+            <p class="mb-0"><strong>Registrada por:</strong> {{ intervention.technician.username if intervention.technician else '-' }}</p>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="alert alert-info">No hay intervenciones registradas para esta estación.</div>
+{% endif %}
+{% endblock %}

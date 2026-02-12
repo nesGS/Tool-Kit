@@ -33,7 +33,15 @@ def list_stations():
 def view_station(station_id):
     station = Station.query.get_or_404(station_id)
     recent_history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).limit(5).all()
-    return render_template('stations/view_station.html', station=station, recent_history=recent_history)
+    recent_breakdowns = Breakdown.query.filter_by(station_id=station_id).order_by(Breakdown.reported_date.desc()).limit(3).all()
+    recent_interventions = Intervention.query.filter_by(station_id=station_id).order_by(Intervention.intervention_date.desc()).limit(3).all()
+    return render_template(
+        'stations/view_station.html',
+        station=station,
+        recent_history=recent_history,
+        recent_breakdowns=recent_breakdowns,
+        recent_interventions=recent_interventions
+    )
 
 # Ver detalle completo de una estación
 @stations.route('/<int:station_id>/details')
@@ -277,3 +285,19 @@ def view_history(station_id):
     station = Station.query.get_or_404(station_id)
     history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).all()
     return render_template('stations/view_history.html', station=station, history=history)
+
+# Ver historial completo de averías
+@stations.route('/<int:station_id>/breakdowns/history')
+@login_required
+def view_breakdowns_history(station_id):
+    station = Station.query.get_or_404(station_id)
+    breakdowns = Breakdown.query.filter_by(station_id=station_id).order_by(Breakdown.reported_date.desc()).all()
+    return render_template('stations/view_breakdowns_history.html', station=station, breakdowns=breakdowns)
+
+# Ver historial completo de intervenciones
+@stations.route('/<int:station_id>/interventions/history')
+@login_required
+def view_interventions_history(station_id):
+    station = Station.query.get_or_404(station_id)
+    interventions = Intervention.query.filter_by(station_id=station_id).order_by(Intervention.intervention_date.desc()).all()
+    return render_template('stations/view_interventions_history.html', station=station, interventions=interventions)

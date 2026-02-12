@@ -106,12 +106,17 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Averías</h5>
-        <a href="{{ url_for('stations.report_breakdown', station_id=station.id) }}" class="btn btn-sm btn-danger">
-            + Reportar Avería
-        </a>
+        <div>
+            <a href="{{ url_for('stations.view_breakdowns_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
+                Ver completo
+            </a>
+            <a href="{{ url_for('stations.report_breakdown', station_id=station.id) }}" class="btn btn-sm btn-danger">
+                + Reportar Avería
+            </a>
+        </div>
     </div>
     <div class="card-body">
-        {% if station.breakdowns %}
+        {% if recent_breakdowns %}
         <div class="table-responsive">
             <table class="table table-sm">
                 <thead>
@@ -124,7 +129,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for breakdown in station.breakdowns|reverse %}
+                    {% for breakdown in recent_breakdowns %}
                     <tr>
                         <td>{{ breakdown.title }}</td>
                         <td>
@@ -161,12 +166,17 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Intervenciones</h5>
-        <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
-            + Registrar Intervención
-        </a>
+        <div>
+            <a href="{{ url_for('stations.view_interventions_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
+                Ver completo
+            </a>
+            <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
+                + Registrar Intervención
+            </a>
+        </div>
     </div>
     <div class="card-body">
-        {% if station.interventions %}
+        {% if recent_interventions %}
         <div class="table-responsive">
             <table class="table table-sm">
                 <thead>
@@ -178,7 +188,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for intervention in station.interventions|reverse %}
+                    {% for intervention in recent_interventions %}
                     <tr>
                         <td>{{ intervention.intervention_date.strftime('%d/%m/%Y') }}</td>
                         <td>{{ intervention.intervention_type|capitalize }}</td>

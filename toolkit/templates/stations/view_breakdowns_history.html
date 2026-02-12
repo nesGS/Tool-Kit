@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Historial Completo de Averías - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Historial Completo de Averías</h1>
+    <div>
+        <a href="{{ url_for('stations.report_breakdown', station_id=station.id) }}" class="btn btn-danger">+ Reportar Avería</a>
+        <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-secondary">Volver a Estación</a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p class="mb-0"><strong>Estación:</strong> {{ station.name }}</p>
+    </div>
+</div>
+
+{% if breakdowns %}
+    {% for breakdown in breakdowns %}
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>{{ breakdown.title }}</strong>
+            <div>
+                {% if breakdown.resolved %}
+                    <span class="badge bg-success">Resuelta</span>
+                {% else %}
+                    <span class="badge bg-danger">Activa</span>
+                {% endif %}
+                {% if breakdown.severity == 'crítica' %}
+                    <span class="badge bg-danger">Crítica</span>
+                {% elif breakdown.severity == 'alta' %}
+                    <span class="badge bg-warning">Alta</span>
+                {% elif breakdown.severity == 'media' %}
+                    <span class="badge bg-info">Media</span>
+                {% else %}
+                    <span class="badge bg-secondary">Baja</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <p><strong>Descripción:</strong> {{ breakdown.description }}</p>
+            <p><strong>Reportada:</strong> {{ breakdown.reported_date.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p><strong>Reportada por:</strong> {{ breakdown.reporter.username if breakdown.reporter else '-' }}</p>
+            <p><strong>Resuelta:</strong> {{ breakdown.resolved_date.strftime('%d/%m/%Y %H:%M') if breakdown.resolved_date else '-' }}</p>
+            <p><strong>Resuelta por:</strong> {{ breakdown.resolver.username if breakdown.resolver else '-' }}</p>
+            <p><strong>Notas de resolución:</strong> {{ breakdown.resolution_notes or '-' }}</p>
+            <p class="mb-0"><strong>Duración:</strong> {{ breakdown.duration }}</p>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="alert alert-info">No hay averías registradas para esta estación.</div>
+{% endif %}
+{% endblock %}
