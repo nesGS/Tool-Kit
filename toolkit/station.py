@@ -34,7 +34,9 @@ def view_station(station_id):
     station = Station.query.get_or_404(station_id)
     recent_history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).limit(5).all()
     recent_breakdowns = Breakdown.query.filter_by(station_id=station_id).order_by(Breakdown.reported_date.desc()).limit(3).all()
-    recent_interventions = Intervention.query.filter_by(station_id=station_id).order_by(Intervention.intervention_date.desc()).limit(3).all()
+    recent_interventions = Intervention.query.filter_by(station_id=station_id).order_by(
+        Intervention.created_at.desc()
+    ).limit(3).all()
     return render_template(
         'stations/view_station.html',
         station=station,
@@ -264,8 +266,8 @@ def add_intervention(station_id):
             intervention_type=request.form.get('intervention_type'),
             title=request.form.get('title'),
             description=request.form.get('description'),
-            intervention_date=datetime.strptime(request.form.get('intervention_date'), '%Y-%m-%d') if request.form.get('intervention_date') else datetime.utcnow(),
-            technician_name=request.form.get('technician_name'),
+            intervention_date=datetime.utcnow(),
+            technician_name=current_user.username,
             performed_by=current_user.id
         )
         
@@ -276,7 +278,7 @@ def add_intervention(station_id):
         flash('Intervención registrada exitosamente', 'success')
         return redirect(url_for('stations.view_station', station_id=station_id))
     
-    return render_template('stations/add_intervention.html', station=station, now=datetime.now())
+    return render_template('stations/add_intervention.html', station=station)
 
 # Ver historial completo
 @stations.route('/<int:station_id>/history')
@@ -299,5 +301,7 @@ def view_breakdowns_history(station_id):
 @login_required
 def view_interventions_history(station_id):
     station = Station.query.get_or_404(station_id)
-    interventions = Intervention.query.filter_by(station_id=station_id).order_by(Intervention.intervention_date.desc()).all()
+    interventions = Intervention.query.filter_by(station_id=station_id).order_by(
+        Intervention.created_at.desc()
+    ).all()
     return render_template('stations/view_interventions_history.html', station=station, interventions=interventions)

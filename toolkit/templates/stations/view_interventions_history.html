@@ -26,7 +26,7 @@
         </div>
         <div class="card-body">
             <p><strong>Descripción:</strong> {{ intervention.description }}</p>
-            <p><strong>Fecha de intervención:</strong> {{ intervention.intervention_date.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p><strong>Fecha de registro:</strong> {{ intervention.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
             <p><strong>Técnico:</strong> {{ intervention.technician_name or intervention.technician.username }}</p>
             <p class="mb-0"><strong>Registrada por:</strong> {{ intervention.technician.username if intervention.technician else '-' }}</p>
         </div>
