@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ station.name }} - Estación INVOLCAN{% endblock %}
+{% block title %}{{ station.name }} - Resumen{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -21,18 +21,16 @@
     </div>
 </div>
 
-<!-- Información General -->
 <div class="card mb-4">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Información General</h5>
+        <a href="{{ url_for('stations.view_station_details', station_id=station.id) }}" class="btn btn-primary btn-sm">
+            Ver información detallada
+        </a>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <p><strong>Ubicación:</strong> {{ station.location }}</p>
-                {% if station.latitude and station.longitude %}
-                <p><strong>Coordenadas:</strong> {{ station.latitude }}, {{ station.longitude }}</p>
-                {% endif %}
                 <p><strong>Estado:</strong>
                     {% if station.status == 'activa' %}
                     <span class="badge bg-success">Activa</span>
@@ -44,18 +42,28 @@
                     <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
                     {% endif %}
                 </p>
+                <p><strong>Ubicación:</strong> {{ station.location }}</p>
             </div>
             <div class="col-md-6">
-                {% if station.installation_date %}
-                <p><strong>Fecha de instalación:</strong> {{ station.installation_date.strftime('%d/%m/%Y') }}</p>
-                {% endif %}
-                <p><strong>Creada:</strong> {{ station.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
-                <p><strong>Última actualización:</strong> {{ station.updated_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                <p><strong>Sensor instalado:</strong>
+                    {% if station.sensors %}
+                        {% set sensor = station.sensors[0] %}
+                        {{ sensor.model or sensor.sensor_type|capitalize }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
+                <p><strong>Router:</strong>
+                    {% if station.router %}
+                        {{ station.router.model or '-' }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
             </div>
         </div>
     </div>
 </div>
-
 <!-- Averías Activas -->
 {% if station.active_breakdowns %}
 <div class="card mb-4 border-danger">
@@ -94,128 +102,6 @@
     </div>
 </div>
 {% endif %}
-
-<!-- Sensores -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Sensores ({{ station.sensors|length }})</h5>
-        <a href="{{ url_for('stations.add_sensor', station_id=station.id) }}" class="btn btn-sm btn-primary">
-            + Añadir Sensor
-        </a>
-    </div>
-    <div class="card-body">
-        {% if station.sensors %}
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Modelo</th>
-                        <th>Serie</th>
-                        <th>Estado</th>
-                        <th>Instalación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sensor in station.sensors %}
-                    <tr>
-                        <td>{{ sensor.sensor_type|capitalize }}</td>
-                        <td>{{ sensor.model or '-' }}</td>
-                        <td>{{ sensor.serial_number or '-' }}</td>
-                        <td>
-                            {% if sensor.status == 'operativo' %}
-                            <span class="badge bg-success">Operativo</span>
-                            {% else %}
-                            <span class="badge bg-danger">{{ sensor.status|capitalize }}</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ sensor.installation_date.strftime('%d/%m/%Y') if sensor.installation_date else '-' }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <p class="text-muted">No hay sensores registrados</p>
-        {% endif %}
-    </div>
-</div>
-<!-- Router -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Router de Conectividad</h5>
-        <a href="{{ url_for('stations.configure_router', station_id=station.id) }}" class="btn btn-sm btn-primary">
-            {% if station.router %}Editar{% else %}Configurar{% endif %}
-        </a>
-    </div>
-    <div class="card-body">
-        {% if station.router %}
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th>Modelo</th>
-                        <th>IP</th>
-                        <th>MAC</th>
-                        <th>Serie</th>
-                        <th>Firmware</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr>
-                        <td>{{ station.router.model|capitalize }}</td>
-                        <td>{{ station.router.ip_address or '-' }}</td>
-                        <td>{{ station.router.mac_address or '-' }}</td>
-                        <td>{{ station.router.serial_number or '-' }}</td>
-                        <td>{{ station.router.firmware_version or '-' }}</td>
-                        <td>
-                            {% if station.router.status == 'online' %}
-                            <span class="badge bg-success">Operativo</span>
-                            {% elif station.router.status == 'offline' %}
-                            <span class="badge bg-danger">{{ station.router.status|capitalize }}</span>
-                            {% else %}
-                            <span class="badge bg-warning">{{ station.router.status|capitalize }}</span>
-                            {% endif %}
-                        </td>                        
-                    </tr>
-                    
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <p class="text-muted">No hay router configurado</p>
-        {% endif %}
-    </div>
-</div>
-<!-- Detalles Técnicos -->
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Detalles Técnicos</h5>
-        <a href="{{ url_for('stations.add_technical_detail', station_id=station.id) }}" class="btn btn-sm btn-primary">
-            + Añadir Detalle
-        </a>
-    </div>
-    <div class="card-body">
-        {% if station.technical_details %}
-        <table class="table table-sm">
-            <tbody>
-                {% for detail in station.technical_details %}
-                <tr>
-                    <td><strong>{{ detail.key }}</strong></td>
-                    <td>{{ detail.value }}</td>
-                    <td><small class="text-muted">{{ detail.detail_type }}</small></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p class="text-muted">No hay detalles técnicos registrados</p>
-        {% endif %}
-    </div>
-</div>
 <!-- Historial de Averías -->
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">

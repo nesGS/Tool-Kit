@@ -27,14 +27,21 @@ def list_stations():
     stations = Station.query.all()
     return render_template('stations/list_stations.html', stations=stations)
 
-# Ver detalle de una estación
+# Ver vista general de una estación
 @stations.route('/<int:station_id>')
 @login_required
 def view_station(station_id):
     station = Station.query.get_or_404(station_id)
-    # Obtener los últimos 5 registros de historial ordenados por fecha descendente
     recent_history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).limit(5).all()
     return render_template('stations/view_station.html', station=station, recent_history=recent_history)
+
+# Ver detalle completo de una estación
+@stations.route('/<int:station_id>/details')
+@login_required
+def view_station_details(station_id):
+    station = Station.query.get_or_404(station_id)
+    recent_history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).limit(5).all()
+    return render_template('stations/view_station_details.html', station=station, recent_history=recent_history)
 
 # Crear nueva estación
 @stations.route('/new', methods=['GET', 'POST'])
