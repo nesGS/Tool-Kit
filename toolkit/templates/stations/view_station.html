@@ -10,10 +10,8 @@
             Editar
         </a>
         {% if current_user.is_admin %}
-        <form method="POST"
-              action="{{ url_for('stations.delete_station', station_id=station.id) }}"
-              class="d-inline"
-              onsubmit="return confirm('¿Seguro que quieres eliminar esta estación? Esta acción no se puede deshacer.');">
+        <form method="POST" action="{{ url_for('stations.delete_station', station_id=station.id) }}" class="d-inline"
+            onsubmit="return confirm('¿Seguro que quieres eliminar esta estación? Esta acción no se puede deshacer.');">
             <button type="submit" class="btn btn-danger">Eliminar</button>
         </form>
         {% endif %}
@@ -35,15 +33,15 @@
                 {% if station.latitude and station.longitude %}
                 <p><strong>Coordenadas:</strong> {{ station.latitude }}, {{ station.longitude }}</p>
                 {% endif %}
-                <p><strong>Estado:</strong> 
+                <p><strong>Estado:</strong>
                     {% if station.status == 'activa' %}
-                        <span class="badge bg-success">Activa</span>
+                    <span class="badge bg-success">Activa</span>
                     {% elif station.status == 'averiada' %}
-                        <span class="badge bg-danger">Averiada</span>
+                    <span class="badge bg-danger">Averiada</span>
                     {% elif station.status == 'mantenimiento' %}
-                        <span class="badge bg-warning">Mantenimiento</span>
+                    <span class="badge bg-warning">Mantenimiento</span>
                     {% else %}
-                        <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
+                    <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
                     {% endif %}
                 </p>
             </div>
@@ -73,20 +71,20 @@
                         <h6>{{ breakdown.title }}</h6>
                         <p class="mb-1">{{ breakdown.description }}</p>
                         <small>
-                            Reportada: {{ breakdown.reported_date.strftime('%d/%m/%Y %H:%M') }} 
+                            Reportada: {{ breakdown.reported_date.strftime('%d/%m/%Y %H:%M') }}
                             por {{ breakdown.reporter.username }}
-                            | Severidad: 
+                            | Severidad:
                             {% if breakdown.severity == 'crítica' %}
-                                <span class="badge bg-danger">Crítica</span>
+                            <span class="badge bg-danger">Crítica</span>
                             {% elif breakdown.severity == 'alta' %}
-                                <span class="badge bg-warning">Alta</span>
+                            <span class="badge bg-warning">Alta</span>
                             {% else %}
-                                <span class="badge bg-info">{{ breakdown.severity|capitalize }}</span>
+                            <span class="badge bg-info">{{ breakdown.severity|capitalize }}</span>
                             {% endif %}
                         </small>
                     </div>
-                    <a href="{{ url_for('stations.resolve_breakdown', breakdown_id=breakdown.id) }}" 
-                       class="btn btn-sm btn-success">
+                    <a href="{{ url_for('stations.resolve_breakdown', breakdown_id=breakdown.id) }}"
+                        class="btn btn-sm btn-success">
                         Resolver
                     </a>
                 </div>
@@ -126,21 +124,22 @@
                         <td>{{ sensor.serial_number or '-' }}</td>
                         <td>
                             {% if sensor.status == 'operativo' %}
-                                <span class="badge bg-success">Operativo</span>
+                            <span class="badge bg-success">Operativo</span>
                             {% else %}
-                                <span class="badge bg-danger">{{ sensor.status|capitalize }}</span>
+                            <span class="badge bg-danger">{{ sensor.status|capitalize }}</span>
                             {% endif %}
                         </td>
-                        <td>{{ sensor.installation_date.strftime('%d/%m/%Y') if sensor.installation_date else '-' }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
-{% else %}
-<p class="text-muted">No hay sensores registrados</p>
-{% endif %}
-</div>
+                        <td>{{ sensor.installation_date.strftime('%d/%m/%Y') if sensor.installation_date else '-' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No hay sensores registrados</p>
+        {% endif %}
+    </div>
 </div>
 <!-- Router -->
 <div class="card mb-4">
@@ -152,23 +151,39 @@
     </div>
     <div class="card-body">
         {% if station.router %}
-        <div class="row">
-            <div class="col-md-6">
-                <p><strong>Modelo:</strong> {{ station.router.model }}</p>
-                <p><strong>IP:</strong> {{ station.router.ip_address or '-' }}</p>
-                <p><strong>MAC:</strong> {{ station.router.mac_address or '-' }}</p>
-            </div>
-            <div class="col-md-6">
-                <p><strong>Serie:</strong> {{ station.router.serial_number or '-' }}</p>
-                <p><strong>Firmware:</strong> {{ station.router.firmware_version or '-' }}</p>
-                <p><strong>Estado:</strong> 
-                    {% if station.router.status == 'online' %}
-                        <span class="badge bg-success">Online</span>
-                    {% else %}
-                        <span class="badge bg-danger">{{ station.router.status|capitalize }}</span>
-                    {% endif %}
-                </p>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Modelo</th>
+                        <th>IP</th>
+                        <th>MAC</th>
+                        <th>Serie</th>
+                        <th>Firmware</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>{{ station.router.model|capitalize }}</td>
+                        <td>{{ station.router.ip_address or '-' }}</td>
+                        <td>{{ station.router.mac_address or '-' }}</td>
+                        <td>{{ station.router.serial_number or '-' }}</td>
+                        <td>{{ station.router.firmware_version or '-' }}</td>
+                        <td>
+                            {% if station.router.status == 'online' %}
+                            <span class="badge bg-success">Operativo</span>
+                            {% elif station.router.status == 'offline' %}
+                            <span class="badge bg-danger">{{ station.router.status|capitalize }}</span>
+                            {% else %}
+                            <span class="badge bg-warning">{{ station.router.status|capitalize }}</span>
+                            {% endif %}
+                        </td>                        
+                    </tr>
+                    
+                </tbody>
+            </table>
         </div>
         {% else %}
         <p class="text-muted">No hay router configurado</p>
@@ -228,22 +243,22 @@
                         <td>{{ breakdown.title }}</td>
                         <td>
                             {% if breakdown.severity == 'crítica' %}
-                                <span class="badge bg-danger">Crítica</span>
+                            <span class="badge bg-danger">Crítica</span>
                             {% elif breakdown.severity == 'alta' %}
-                                <span class="badge bg-warning">Alta</span>
+                            <span class="badge bg-warning">Alta</span>
                             {% elif breakdown.severity == 'media' %}
-                                <span class="badge bg-info">Media</span>
+                            <span class="badge bg-info">Media</span>
                             {% else %}
-                                <span class="badge bg-secondary">Baja</span>
+                            <span class="badge bg-secondary">Baja</span>
                             {% endif %}
                         </td>
                         <td>{{ breakdown.reported_date.strftime('%d/%m/%Y') }}</td>
                         <td>{{ breakdown.resolved_date.strftime('%d/%m/%Y') if breakdown.resolved_date else '-' }}</td>
                         <td>
                             {% if breakdown.resolved %}
-                                <span class="badge bg-success">Resuelta</span>
+                            <span class="badge bg-success">Resuelta</span>
                             {% else %}
-                                <span class="badge bg-danger">Activa</span>
+                            <span class="badge bg-danger">Activa</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -309,29 +324,29 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         {% if record.action == 'created' %}
-                            <span class="badge bg-success">Creada</span>
+                        <span class="badge bg-success">Creada</span>
                         {% elif record.action == 'updated' %}
-                            <span class="badge bg-primary">Actualizada</span>
+                        <span class="badge bg-primary">Actualizada</span>
                         {% elif record.action == 'status_changed' %}
-                            <span class="badge bg-warning">Cambio de Estado</span>
+                        <span class="badge bg-warning">Cambio de Estado</span>
                         {% elif record.action == 'sensor_added' %}
-                            <span class="badge bg-info">Sensor Añadido</span>
+                        <span class="badge bg-info">Sensor Añadido</span>
                         {% elif record.action == 'router_configured' %}
-                            <span class="badge bg-info">Router Configurado</span>
+                        <span class="badge bg-info">Router Configurado</span>
                         {% elif record.action == 'detail_added' %}
-                            <span class="badge bg-info">Detalle Añadido</span>
+                        <span class="badge bg-info">Detalle Añadido</span>
                         {% elif record.action == 'breakdown_reported' %}
-                            <span class="badge bg-danger">Avería Reportada</span>
+                        <span class="badge bg-danger">Avería Reportada</span>
                         {% elif record.action == 'breakdown_resolved' %}
-                            <span class="badge bg-success">Avería Resuelta</span>
+                        <span class="badge bg-success">Avería Resuelta</span>
                         {% elif record.action == 'intervention_added' %}
-                            <span class="badge bg-primary">Intervención</span>
+                        <span class="badge bg-primary">Intervención</span>
                         {% else %}
-                            <span class="badge bg-secondary">{{ record.action|replace('_', ' ')|capitalize }}</span>
+                        <span class="badge bg-secondary">{{ record.action|replace('_', ' ')|capitalize }}</span>
                         {% endif %}
-                        
+
                         {% if record.description %}
-                            <strong>{{ record.description }}</strong>
+                        <strong>{{ record.description }}</strong>
                         {% endif %}
                     </div>
                     <small class="text-muted">{{ record.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
