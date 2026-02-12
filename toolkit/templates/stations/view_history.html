@@ -59,6 +59,13 @@
                                 {{ record.created_at.strftime('%d/%m/%Y') }}<br>
                                 {{ record.created_at.strftime('%H:%M:%S') }}
                             </small>
+                            {% if current_user.is_admin %}
+                            <form method="POST" action="{{ url_for('stations.delete_history_record', history_id=record.id) }}"
+                                class="mt-2"
+                                onsubmit="return confirm('¿Seguro que quieres eliminar este registro del historial? Esta acción no se puede deshacer.');">
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar registro</button>
+                            </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

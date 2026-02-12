@@ -288,6 +288,18 @@ def view_history(station_id):
     history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).all()
     return render_template('stations/view_history.html', station=station, history=history)
 
+# Eliminar registro de historial (solo admin)
+@stations.route('/history/<int:history_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_history_record(history_id):
+    history_record = StationHistory.query.get_or_404(history_id)
+    station_id = history_record.station_id
+    db.session.delete(history_record)
+    db.session.commit()
+    flash('Registro de historial eliminado', 'success')
+    return redirect(url_for('stations.view_history', station_id=station_id))
+
 # Ver historial completo de averías
 @stations.route('/<int:station_id>/breakdowns/history')
 @login_required
@@ -295,6 +307,18 @@ def view_breakdowns_history(station_id):
     station = Station.query.get_or_404(station_id)
     breakdowns = Breakdown.query.filter_by(station_id=station_id).order_by(Breakdown.reported_date.desc()).all()
     return render_template('stations/view_breakdowns_history.html', station=station, breakdowns=breakdowns)
+
+# Eliminar avería (solo admin)
+@stations.route('/breakdowns/<int:breakdown_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_breakdown(breakdown_id):
+    breakdown = Breakdown.query.get_or_404(breakdown_id)
+    station_id = breakdown.station_id
+    db.session.delete(breakdown)
+    db.session.commit()
+    flash('Avería eliminada', 'success')
+    return redirect(url_for('stations.view_breakdowns_history', station_id=station_id))
 
 # Ver historial completo de intervenciones
 @stations.route('/<int:station_id>/interventions/history')
@@ -305,3 +329,15 @@ def view_interventions_history(station_id):
         Intervention.created_at.desc()
     ).all()
     return render_template('stations/view_interventions_history.html', station=station, interventions=interventions)
+
+# Eliminar intervención (solo admin)
+@stations.route('/interventions/<int:intervention_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_intervention(intervention_id):
+    intervention = Intervention.query.get_or_404(intervention_id)
+    station_id = intervention.station_id
+    db.session.delete(intervention)
+    db.session.commit()
+    flash('Intervención eliminada', 'success')
+    return redirect(url_for('stations.view_interventions_history', station_id=station_id))
