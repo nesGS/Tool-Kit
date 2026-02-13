@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Sensor - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Editar Sensor - {{ station.name }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="sensor_type" class="form-label">Tipo de Sensor *</label>
+                            <select class="form-control" id="sensor_type" name="sensor_type" required>
+                                <option value="temperatura" {% if sensor.sensor_type == 'temperatura' %}selected{% endif %}>Temperatura</option>
+                                <option value="humedad" {% if sensor.sensor_type == 'humedad' %}selected{% endif %}>Humedad</option>
+                                <option value="presion" {% if sensor.sensor_type == 'presion' %}selected{% endif %}>Presión Atmosférica</option>
+                                <option value="viento" {% if sensor.sensor_type == 'viento' %}selected{% endif %}>Velocidad del Viento</option>
+                                <option value="direccion_viento" {% if sensor.sensor_type == 'direccion_viento' %}selected{% endif %}>Dirección del Viento</option>
+                                <option value="lluvia" {% if sensor.sensor_type == 'lluvia' %}selected{% endif %}>Precipitación</option>
+                                <option value="radiacion" {% if sensor.sensor_type == 'radiacion' %}selected{% endif %}>Radiación Solar</option>
+                                <option value="uv" {% if sensor.sensor_type == 'uv' %}selected{% endif %}>Índice UV</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">Estado *</label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="operativo" {% if sensor.status == 'operativo' %}selected{% endif %}>Operativo</option>
+                                <option value="averiado" {% if sensor.status == 'averiado' %}selected{% endif %}>Averiado</option>
+                                <option value="en_calibracion" {% if sensor.status == 'en_calibracion' %}selected{% endif %}>En Calibración</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="model" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="model" name="model" value="{{ sensor.model or '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="serial_number" class="form-label">Número de Serie</label>
+                            <input type="text" class="form-control" id="serial_number" name="serial_number" value="{{ sensor.serial_number or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="installation_date" class="form-label">Fecha de Instalación</label>
+                        <input type="date" class="form-control" id="installation_date" name="installation_date"
+                            value="{{ sensor.installation_date.strftime('%Y-%m-%d') if sensor.installation_date else '' }}">
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('stations.view_station_details', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Detalle Técnico - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Editar Detalle Técnico - {{ station.name }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="detail_type" class="form-label">Categoría *</label>
+                        <select class="form-control" id="detail_type" name="detail_type" required>
+                            <option value="alimentacion" {% if detail.detail_type == 'alimentacion' %}selected{% endif %}>Alimentación</option>
+                            <option value="conectividad" {% if detail.detail_type == 'conectividad' %}selected{% endif %}>Conectividad</option>
+                            <option value="estructura" {% if detail.detail_type == 'estructura' %}selected{% endif %}>Estructura</option>
+                            <option value="hardware" {% if detail.detail_type == 'hardware' %}selected{% endif %}>Hardware</option>
+                            <option value="software" {% if detail.detail_type == 'software' %}selected{% endif %}>Software</option>
+                            <option value="mantenimiento" {% if detail.detail_type == 'mantenimiento' %}selected{% endif %}>Mantenimiento</option>
+                            <option value="otros" {% if detail.detail_type == 'otros' %}selected{% endif %}>Otros</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="key" class="form-label">Nombre del Detalle *</label>
+                        <input type="text" class="form-control" id="key" name="key" value="{{ detail.key }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="value" class="form-label">Valor/Descripción *</label>
+                        <textarea class="form-control" id="value" name="value" rows="3" required>{{ detail.value }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('stations.view_station_details', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

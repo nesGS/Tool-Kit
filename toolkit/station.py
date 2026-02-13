@@ -156,9 +156,44 @@ def add_sensor(station_id):
         db.session.commit()
         
         flash('Sensor añadido exitosamente', 'success')
-        return redirect(url_for('stations.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station_details', station_id=station_id))
     
     return render_template('stations/add_sensor.html', station=station)
+
+# Editar sensor
+@stations.route('/<int:station_id>/sensors/<int:sensor_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_sensor(station_id, sensor_id):
+    station = Station.query.get_or_404(station_id)
+    sensor = Sensor.query.filter_by(id=sensor_id, station_id=station_id).first_or_404()
+
+    if request.method == 'POST':
+        sensor.sensor_type = request.form.get('sensor_type')
+        sensor.model = request.form.get('model')
+        sensor.serial_number = request.form.get('serial_number')
+        sensor.status = request.form.get('status', 'operativo')
+        sensor.installation_date = datetime.strptime(request.form.get('installation_date'), '%Y-%m-%d') if request.form.get('installation_date') else None
+
+        log_change(station_id, 'sensor_updated', description=f'Sensor {sensor.sensor_type} actualizado')
+        db.session.commit()
+
+        flash('Sensor actualizado exitosamente', 'success')
+        return redirect(url_for('stations.view_station_details', station_id=station_id))
+
+    return render_template('stations/edit_sensor.html', station=station, sensor=sensor)
+
+# Eliminar sensor
+@stations.route('/<int:station_id>/sensors/<int:sensor_id>/delete', methods=['POST'])
+@login_required
+def delete_sensor(station_id, sensor_id):
+    sensor = Sensor.query.filter_by(id=sensor_id, station_id=station_id).first_or_404()
+    sensor_label = sensor.model or sensor.sensor_type
+    db.session.delete(sensor)
+    log_change(station_id, 'sensor_deleted', description=f'Sensor {sensor_label} eliminado')
+    db.session.commit()
+
+    flash('Sensor eliminado exitosamente', 'success')
+    return redirect(url_for('stations.view_station_details', station_id=station_id))
 
 # Configurar router
 @stations.route('/<int:station_id>/router', methods=['GET', 'POST'])
@@ -183,7 +218,7 @@ def configure_router(station_id):
         db.session.commit()
         
         flash('Router configurado exitosamente', 'success')
-        return redirect(url_for('stations.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station_details', station_id=station_id))
     
     return render_template('stations/configure_router.html', station=station, router=router)
 
@@ -206,9 +241,42 @@ def add_technical_detail(station_id):
         db.session.commit()
         
         flash('Detalle técnico añadido', 'success')
-        return redirect(url_for('stations.view_station', station_id=station_id))
+        return redirect(url_for('stations.view_station_details', station_id=station_id))
     
     return render_template('stations/add_technical_detail.html', station=station)
+
+# Editar detalle técnico
+@stations.route('/<int:station_id>/details/<int:detail_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_technical_detail(station_id, detail_id):
+    station = Station.query.get_or_404(station_id)
+    detail = TechnicalDetail.query.filter_by(id=detail_id, station_id=station_id).first_or_404()
+
+    if request.method == 'POST':
+        detail.detail_type = request.form.get('detail_type')
+        detail.key = request.form.get('key')
+        detail.value = request.form.get('value')
+
+        log_change(station_id, 'detail_updated', description=f'Detalle técnico {detail.key} actualizado')
+        db.session.commit()
+
+        flash('Detalle técnico actualizado', 'success')
+        return redirect(url_for('stations.view_station_details', station_id=station_id))
+
+    return render_template('stations/edit_technical_detail.html', station=station, detail=detail)
+
+# Eliminar detalle técnico
+@stations.route('/<int:station_id>/details/<int:detail_id>/delete', methods=['POST'])
+@login_required
+def delete_technical_detail(station_id, detail_id):
+    detail = TechnicalDetail.query.filter_by(id=detail_id, station_id=station_id).first_or_404()
+    detail_key = detail.key
+    db.session.delete(detail)
+    log_change(station_id, 'detail_deleted', description=f'Detalle técnico {detail_key} eliminado')
+    db.session.commit()
+
+    flash('Detalle técnico eliminado', 'success')
+    return redirect(url_for('stations.view_station_details', station_id=station_id))
 
 # Reportar avería
 @stations.route('/<int:station_id>/breakdowns/report', methods=['GET', 'POST'])

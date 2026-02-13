@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>{{ station.name }}</h1>
     <div>
-        <a href="{{ url_for('stations.edit_station', station_id=station.id) }}" class="btn btn-warning">
+        <a href="{{ url_for('stations.edit_station', station_id=station.id) }}" class="btn btn-outline-primary">
             Editar
         </a>
         {% if current_user.is_admin %}
