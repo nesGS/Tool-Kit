@@ -119,7 +119,7 @@
         <h5>Router de Conectividad</h5>
         <a href="{{ url_for('stations.configure_router', station_id=station.id) }}"
             class="btn btn-sm {% if station.router %}btn-outline-primary{% else %}btn-primary{% endif %}">
-            {% if station.router %}Editar{% else %}Configurar{% endif %}
+            {% if station.router %}Editar{% else %}+ Añadir Router{% endif %}
         </a>
     </div>
     <div class="card-body">
@@ -185,7 +185,7 @@
             <tbody>
                 {% for detail in station.technical_details %}
                 <tr>
-                    <td><strong>{{ detail.key }}</strong></td>
+                    <td>{{ detail.key }}</td>
                     <td>{{ detail.value }}</td>
                     <td><small class="text-muted">{{ detail.detail_type }}</small></td>
                     <td class="text-end text-nowrap">

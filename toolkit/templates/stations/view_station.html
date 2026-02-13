@@ -6,9 +6,6 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>{{ station.name }}</h1>
     <div>
-        <a href="{{ url_for('stations.edit_station', station_id=station.id) }}" class="btn btn-outline-primary">
-            Editar
-        </a>
         {% if current_user.is_admin %}
         <form method="POST" action="{{ url_for('stations.delete_station', station_id=station.id) }}" class="d-inline"
             onsubmit="return confirm('¿Seguro que quieres eliminar esta estación? Esta acción no se puede deshacer.');">
@@ -107,12 +104,14 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Averías</h5>
         <div>
-            <a href="{{ url_for('stations.view_breakdowns_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
-                Ver completo
-            </a>
             <a href="{{ url_for('stations.report_breakdown', station_id=station.id) }}" class="btn btn-sm btn-danger">
                 + Reportar Avería
             </a>
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('stations.view_breakdowns_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
+                Ver completo
+            </a>
+            {% endif %}
         </div>
     </div>
     <div class="card-body">
@@ -135,10 +134,6 @@
                         <td>
                             {% if breakdown.severity == 'crítica' %}
                             <span class="badge bg-danger">Crítica</span>
-                            {% elif breakdown.severity == 'alta' %}
-                            <span class="badge bg-warning">Alta</span>
-                            {% elif breakdown.severity == 'media' %}
-                            <span class="badge bg-info">Media</span>
                             {% else %}
                             <span class="badge bg-secondary">Baja</span>
                             {% endif %}
@@ -167,12 +162,14 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Intervenciones</h5>
         <div>
-            <a href="{{ url_for('stations.view_interventions_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
-                Ver completo
-            </a>
             <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
                 + Registrar Intervención
             </a>
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('stations.view_interventions_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
+                Ver completo
+            </a>
+            {% endif %}
         </div>
     </div>
     <div class="card-body">
@@ -208,9 +205,11 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Cambios</h5>
+        {% if current_user.is_admin %}
         <a href="{{ url_for('stations.view_history', station_id=station.id) }}" class="btn btn-sm btn-secondary">
             Ver Completo
         </a>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if recent_history %}
