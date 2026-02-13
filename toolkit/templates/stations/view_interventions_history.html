@@ -6,6 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Historial Completo de Intervenciones</h1>
     <div>
+        <a href="{{ url_for('stations.schedule_intervention', station_id=station.id) }}" class="btn btn-info text-white">+ Programar Intervención</a>
         <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-primary">+ Registrar Intervención</a>
         <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-secondary">Volver a Estación</a>
     </div>
@@ -22,13 +23,21 @@
     <div class="card mb-3">
         <div class="card-header d-flex justify-content-between align-items-center">
             <strong>{{ intervention.title }}</strong>
-            <span class="badge bg-primary">{{ intervention.intervention_type|capitalize }}</span>
+            <div>
+                <span class="badge bg-primary">{{ intervention.intervention_type|capitalize }}</span>
+                {% if intervention.technician_name %}
+                <span class="badge bg-success">Realizada</span>
+                {% else %}
+                <span class="badge bg-info">Programada</span>
+                {% endif %}
+            </div>
         </div>
         <div class="card-body">
             <p><strong>Tipo de Intervención:</strong> {{ intervention.intervention_type|capitalize }}</p>
             <p><strong>Título:</strong> {{ intervention.title }}</p>
             <p><strong>Descripción:</strong> {{ intervention.description }}</p>
             <p><strong>Fecha de registro:</strong> {{ intervention.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p><strong>Fecha de realización:</strong> {{ intervention.intervention_date.strftime('%d/%m/%Y %H:%M') if intervention.technician_name else '-' }}</p>
             <p class="mb-0"><strong>Técnico:</strong> {{ intervention.technician_name or intervention.technician.username }}</p>
             {% if current_user.is_admin %}
             <div class="mt-3">

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Programar Intervención - {{ station.name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h3>Programar Intervención - {{ station.name }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="intervention_type" class="form-label">Tipo de Intervención *</label>
+                        <select class="form-control" id="intervention_type" name="intervention_type" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="mantenimiento">Mantenimiento Preventivo</option>
+                            <option value="reparacion">Reparación</option>
+                            <option value="calibracion">Calibración</option>
+                            <option value="instalacion">Instalación</option>
+                            <option value="actualizacion">Actualización</option>
+                            <option value="inspeccion">Inspección</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Título *</label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Ej: Calibración anual de sensores" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descripción Detallada *</label>
+                        <textarea class="form-control" id="description" name="description" rows="5"
+                                  placeholder="Describe la intervención a realizar y el alcance." required></textarea>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Nota:</strong> Esta intervención quedará activa hasta que se marque como realizada.
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-info text-white">Programar Intervención</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

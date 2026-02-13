@@ -99,6 +99,36 @@
     </div>
 </div>
 {% endif %}
+<!-- Intervenciones Programadas Activas -->
+{% if station.active_interventions %}
+<div class="card mb-4 border-info">
+    <div class="card-header bg-info text-white">
+        <h5>🛠 Intervenciones Programadas ({{ station.active_interventions|length }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="list-group">
+            {% for intervention in station.active_interventions %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6>{{ intervention.title }}</h6>
+                        <p class="mb-1">{{ intervention.description }}</p>
+                        <small>
+                            Programada: {{ intervention.created_at.strftime('%d/%m/%Y %H:%M') }}
+                            | Tipo: {{ intervention.intervention_type|capitalize }}
+                        </small>
+                    </div>
+                    <a href="{{ url_for('stations.complete_intervention', intervention_id=intervention.id) }}"
+                        class="btn btn-sm btn-success">
+                        Realizar
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
 <!-- Historial de Averías -->
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -162,6 +192,9 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Historial de Intervenciones</h5>
         <div>
+            <a href="{{ url_for('stations.schedule_intervention', station_id=station.id) }}" class="btn btn-sm btn-info text-white">
+                + Programar Intervención
+            </a>
             <a href="{{ url_for('stations.add_intervention', station_id=station.id) }}" class="btn btn-sm btn-primary">
                 + Registrar Intervención
             </a>
@@ -236,6 +269,10 @@
                         <span class="badge bg-success">Avería Resuelta</span>
                         {% elif record.action == 'intervention_added' %}
                         <span class="badge bg-primary">Intervención</span>
+                        {% elif record.action == 'intervention_scheduled' %}
+                        <span class="badge bg-info">Intervención Programada</span>
+                        {% elif record.action == 'intervention_completed' %}
+                        <span class="badge bg-success">Intervención Realizada</span>
                         {% else %}
                         <span class="badge bg-secondary">{{ record.action|replace('_', ' ')|capitalize }}</span>
                         {% endif %}

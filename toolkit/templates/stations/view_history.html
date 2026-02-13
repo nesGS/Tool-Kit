@@ -34,6 +34,10 @@
                                     <span class="badge bg-success">Avería Resuelta</span>
                                 {% elif record.action == 'intervention_added' %}
                                     <span class="badge bg-primary">Intervención</span>
+                                {% elif record.action == 'intervention_scheduled' %}
+                                    <span class="badge bg-info">Intervención Programada</span>
+                                {% elif record.action == 'intervention_completed' %}
+                                    <span class="badge bg-success">Intervención Realizada</span>
                                 {% else %}
                                     <span class="badge bg-secondary">{{ record.action|replace('_', ' ')|capitalize }}</span>
                                 {% endif %}

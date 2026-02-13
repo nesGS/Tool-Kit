@@ -34,7 +34,10 @@ def view_station(station_id):
     station = Station.query.get_or_404(station_id)
     recent_history = StationHistory.query.filter_by(station_id=station_id).order_by(StationHistory.created_at.desc()).limit(5).all()
     recent_breakdowns = Breakdown.query.filter_by(station_id=station_id).order_by(Breakdown.reported_date.desc()).limit(3).all()
-    recent_interventions = Intervention.query.filter_by(station_id=station_id).order_by(
+    recent_interventions = Intervention.query.filter(
+        Intervention.station_id == station_id,
+        Intervention.technician_name.isnot(None)
+    ).order_by(
         Intervention.created_at.desc()
     ).limit(3).all()
     return render_template(
@@ -321,6 +324,55 @@ def resolve_breakdown(breakdown_id):
         return redirect(url_for('stations.view_station', station_id=breakdown.station_id))
     
     return render_template('stations/resolve_breakdown.html', breakdown=breakdown)
+
+# Programar intervención (queda activa hasta realizarse)
+@stations.route('/<int:station_id>/interventions/schedule', methods=['GET', 'POST'])
+@login_required
+def schedule_intervention(station_id):
+    station = Station.query.get_or_404(station_id)
+
+    if request.method == 'POST':
+        intervention = Intervention(
+            station_id=station_id,
+            intervention_type=request.form.get('intervention_type'),
+            title=request.form.get('title'),
+            description=request.form.get('description'),
+            intervention_date=None,
+            technician_name=None,
+            performed_by=current_user.id
+        )
+
+        db.session.add(intervention)
+        log_change(station_id, 'intervention_scheduled', description=f'Intervención programada: {intervention.title}')
+        db.session.commit()
+
+        flash('Intervención programada exitosamente', 'info')
+        return redirect(url_for('stations.view_station', station_id=station_id))
+
+    return render_template('stations/schedule_intervention.html', station=station)
+
+# Marcar intervención programada como realizada
+@stations.route('/interventions/<int:intervention_id>/complete', methods=['GET', 'POST'])
+@login_required
+def complete_intervention(intervention_id):
+    intervention = Intervention.query.get_or_404(intervention_id)
+
+    if request.method == 'POST':
+        intervention.intervention_date = datetime.utcnow()
+        intervention.technician_name = current_user.username
+        intervention.performed_by = current_user.id
+
+        log_change(
+            intervention.station_id,
+            'intervention_completed',
+            description=f'Intervención realizada: {intervention.title}'
+        )
+        db.session.commit()
+
+        flash('Intervención marcada como realizada', 'success')
+        return redirect(url_for('stations.view_station', station_id=intervention.station_id))
+
+    return render_template('stations/complete_intervention.html', intervention=intervention)
 
 # Registrar intervención
 @stations.route('/<int:station_id>/interventions/add', methods=['GET', 'POST'])

@@ -34,6 +34,16 @@ class Station(db.Model):
     def has_active_breakdowns(self):
         """¿Tiene averías activas?"""
         return len(self.active_breakdowns) > 0
+
+    @property
+    def active_interventions(self):
+        """Intervenciones programadas pendientes de realizar."""
+        return [i for i in self.interventions if i.technician_name is None]
+
+    @property
+    def has_active_interventions(self):
+        """¿Tiene intervenciones programadas activas?"""
+        return len(self.active_interventions) > 0
     
     def __repr__(self):
         return f'<Station {self.name}>'

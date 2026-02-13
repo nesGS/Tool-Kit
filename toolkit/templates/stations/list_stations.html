@@ -34,6 +34,11 @@
                         <small>⚠ {{ station.active_breakdowns|length }} avería(s) activa(s)</small>
                     </div>
                 {% endif %}
+                {% if station.has_active_interventions %}
+                    <div class="alert alert-info py-2">
+                        <small>🛠 {{ station.active_interventions|length }} intervención(es) programada(s)</small>
+                    </div>
+                {% endif %}
                 <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-sm btn-primary">
                     Ver Detalles
                 </a>
