@@ -17,8 +17,8 @@
                             <input type="text" class="form-control" id="name" name="name" value="{{ station.name }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="status" class="form-label">Estado *</label>
-                            <select class="form-control" id="status" name="status" required>
+                            <label for="status" class="form-label">Estado</label>
+                            <select class="form-control" id="status" name="status">
                                 <option value="activa" {% if station.status == 'activa' %}selected{% endif %}>Activa</option>
                                 <option value="inactiva" {% if station.status == 'inactiva' %}selected{% endif %}>Inactiva</option>
                                 <option value="mantenimiento" {% if station.status == 'mantenimiento' %}selected{% endif %}>En Mantenimiento</option>
@@ -53,21 +53,23 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="coordinates" class="form-label">Coordenadas *</label>
-                        <input type="text" class="form-control" id="coordinates" name="coordinates" value="{{ station.coordinates }}" required>
+                        <label for="coordinates" class="form-label">Coordenadas</label>
+                        <input type="text" class="form-control" id="coordinates" name="coordinates" value="{{ station.coordinates or '' }}">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="required_vehicle" class="form-label">Vehículo Necesario *</label>
-                            <select class="form-control" id="required_vehicle" name="required_vehicle" required>
+                            <label for="required_vehicle" class="form-label">Vehículo Necesario</label>
+                            <select class="form-control" id="required_vehicle" name="required_vehicle">
+                                <option value="" {% if not station.required_vehicle %}selected{% endif %}>Seleccionar...</option>
                                 <option value="normal" {% if station.required_vehicle == 'normal' %}selected{% endif %}>Normal</option>
                                 <option value="4x4" {% if station.required_vehicle == '4x4' %}selected{% endif %}>4x4</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="measurement_type" class="form-label">Tipo de Medida *</label>
-                            <select class="form-control" id="measurement_type" name="measurement_type" required>
+                            <label for="measurement_type" class="form-label">Tipo de Medida</label>
+                            <select class="form-control" id="measurement_type" name="measurement_type">
+                                <option value="" {% if not station.measurement_type %}selected{% endif %}>Seleccionar...</option>
                                 <option value="Gases" {% if station.measurement_type == 'Gases' %}selected{% endif %}>Gases</option>
                                 <option value="Térmica" {% if station.measurement_type == 'Térmica' %}selected{% endif %}>Térmica</option>
                                 <option value="Geodesia" {% if station.measurement_type == 'Geodesia' %}selected{% endif %}>Geodesia</option>
@@ -78,13 +80,13 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="contact" class="form-label">Contacto *</label>
-                        <input type="text" class="form-control" id="contact" name="contact" value="{{ station.contact }}" required>
+                        <label for="contact" class="form-label">Contacto</label>
+                        <input type="text" class="form-control" id="contact" name="contact" value="{{ station.contact or '' }}">
                     </div>
 
                     <div class="mb-3">
-                        <label for="how_to_get" class="form-label">Cómo Llegar *</label>
-                        <textarea class="form-control" id="how_to_get" name="how_to_get" rows="4" required>{{ station.how_to_get }}</textarea>
+                        <label for="how_to_get" class="form-label">Cómo Llegar</label>
+                        <textarea class="form-control" id="how_to_get" name="how_to_get" rows="4">{{ station.how_to_get or '' }}</textarea>
                     </div>
 
                     <div class="alert alert-info">
