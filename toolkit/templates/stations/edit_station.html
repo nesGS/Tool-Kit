@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <div class="card">
             <div class="card-header">
                 <h3>Editar Estación: {{ station.name }}</h3>
@@ -14,8 +14,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="name" class="form-label">Nombre de la Estación *</label>
-                            <input type="text" class="form-control" id="name" name="name" 
-                                   value="{{ station.name }}" required>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ station.name }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="status" class="form-label">Estado *</label>
@@ -27,32 +26,71 @@
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="location" class="form-label">Ubicación *</label>
-                        <input type="text" class="form-control" id="location" name="location" 
-                               value="{{ station.location }}" required>
-                    </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="latitude" class="form-label">Latitud</label>
-                            <input type="number" step="any" class="form-control" id="latitude" name="latitude" 
-                                   value="{{ station.latitude or '' }}">
+                            <label for="island" class="form-label">Isla *</label>
+                            <select class="form-control" id="island" name="island" required>
+                                <option value="Tenerife" {% if station.island == 'Tenerife' %}selected{% endif %}>Tenerife</option>
+                                <option value="Gran Canaria" {% if station.island == 'Gran Canaria' %}selected{% endif %}>Gran Canaria</option>
+                                <option value="Lanzarote" {% if station.island == 'Lanzarote' %}selected{% endif %}>Lanzarote</option>
+                                <option value="Fuerteventura" {% if station.island == 'Fuerteventura' %}selected{% endif %}>Fuerteventura</option>
+                                <option value="La Palma" {% if station.island == 'La Palma' %}selected{% endif %}>La Palma</option>
+                                <option value="La Gomera" {% if station.island == 'La Gomera' %}selected{% endif %}>La Gomera</option>
+                                <option value="El Hierro" {% if station.island == 'El Hierro' %}selected{% endif %}>El Hierro</option>
+                                <option value="Otros" {% if station.island == 'Otros' %}selected{% endif %}>Otros</option>
+                            </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="longitude" class="form-label">Longitud</label>
-                            <input type="number" step="any" class="form-control" id="longitude" name="longitude" 
-                                   value="{{ station.longitude or '' }}">
+                            <label for="municipality" class="form-label">Municipio *</label>
+                            <input type="text" class="form-control" id="municipality" name="municipality" value="{{ station.municipality }}" required>
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
-                        <label for="installation_date" class="form-label">Fecha de Instalación</label>
-                        <input type="date" class="form-control" id="installation_date" name="installation_date"
-                               value="{{ station.installation_date.strftime('%Y-%m-%d') if station.installation_date else '' }}">
+                        <label for="location" class="form-label">Ubicación *</label>
+                        <input type="text" class="form-control" id="location" name="location" value="{{ station.location }}" required>
                     </div>
-                    
+
+                    <div class="mb-3">
+                        <label for="coordinates" class="form-label">Coordenadas *</label>
+                        <input type="text" class="form-control" id="coordinates" name="coordinates" value="{{ station.coordinates }}" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="required_vehicle" class="form-label">Vehículo Necesario *</label>
+                            <select class="form-control" id="required_vehicle" name="required_vehicle" required>
+                                <option value="normal" {% if station.required_vehicle == 'normal' %}selected{% endif %}>Normal</option>
+                                <option value="4x4" {% if station.required_vehicle == '4x4' %}selected{% endif %}>4x4</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="measurement_type" class="form-label">Tipo de Medida *</label>
+                            <select class="form-control" id="measurement_type" name="measurement_type" required>
+                                <option value="Gases" {% if station.measurement_type == 'Gases' %}selected{% endif %}>Gases</option>
+                                <option value="Térmica" {% if station.measurement_type == 'Térmica' %}selected{% endif %}>Térmica</option>
+                                <option value="Geodesia" {% if station.measurement_type == 'Geodesia' %}selected{% endif %}>Geodesia</option>
+                                <option value="Gravimetría" {% if station.measurement_type == 'Gravimetría' %}selected{% endif %}>Gravimetría</option>
+                                <option value="Sísmica" {% if station.measurement_type == 'Sísmica' %}selected{% endif %}>Sísmica</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contact" class="form-label">Contacto *</label>
+                        <input type="text" class="form-control" id="contact" name="contact" value="{{ station.contact }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="how_to_get" class="form-label">Cómo Llegar *</label>
+                        <textarea class="form-control" id="how_to_get" name="how_to_get" rows="4" required>{{ station.how_to_get }}</textarea>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Info:</strong> La fecha de actualización se modifica automáticamente al guardar.
+                    </div>
+
                     <div class="d-flex justify-content-between">
                         <a href="{{ request.referrer or url_for('stations.view_station_details', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>

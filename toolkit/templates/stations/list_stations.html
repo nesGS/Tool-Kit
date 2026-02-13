@@ -27,6 +27,7 @@
                 {% endif %}
             </div>
             <div class="card-body">
+                <p><strong>Isla/Municipio:</strong> {{ station.island }} / {{ station.municipality }}</p>
                 <p><strong>Ubicación:</strong> {{ station.location }}</p>
                 <p><strong>Sensores:</strong> {{ station.sensors|length }}</p>
                 {% if station.has_active_breakdowns %}

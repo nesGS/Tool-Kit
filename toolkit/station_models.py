@@ -7,11 +7,15 @@ class Station(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
+    island = db.Column(db.String(50), nullable=False)
+    municipality = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(200), nullable=False)
-    latitude = db.Column(db.Float, nullable=True)
-    longitude = db.Column(db.Float, nullable=True)
+    coordinates = db.Column(db.String(100), nullable=True)
+    contact = db.Column(db.String(200), nullable=True)
+    how_to_get = db.Column(db.Text, nullable=True)
+    required_vehicle = db.Column(db.String(20), nullable=True)  # normal, 4x4
+    measurement_type = db.Column(db.String(50), nullable=True)
     status = db.Column(db.String(20), default='activa')  # activa, inactiva, mantenimiento, averiada
-    installation_date = db.Column(db.DateTime, nullable=True)
     
     # Relaciones
     sensors = db.relationship('Sensor', backref='station', lazy=True, cascade='all, delete-orphan')

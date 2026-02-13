@@ -29,10 +29,10 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
+                <p><strong>Isla:</strong> {{ station.island }}</p>
+                <p><strong>Municipio:</strong> {{ station.municipality }}</p>
                 <p><strong>Ubicación:</strong> {{ station.location }}</p>
-                {% if station.latitude and station.longitude %}
-                <p><strong>Coordenadas:</strong> {{ station.latitude }}, {{ station.longitude }}</p>
-                {% endif %}
+                <p><strong>Coordenadas:</strong> {{ station.coordinates or '-' }}</p>
                 <p><strong>Estado:</strong>
                     {% if station.status == 'activa' %}
                     <span class="badge bg-success">Activa</span>
@@ -46,9 +46,10 @@
                 </p>
             </div>
             <div class="col-md-6">
-                {% if station.installation_date %}
-                <p><strong>Fecha de instalación:</strong> {{ station.installation_date.strftime('%d/%m/%Y') }}</p>
-                {% endif %}
+                <p><strong>Tipo de medida:</strong> {{ station.measurement_type or '-' }}</p>
+                <p><strong>Vehículo necesario:</strong> {{ station.required_vehicle|upper if station.required_vehicle == '4x4' else station.required_vehicle|capitalize if station.required_vehicle else '-' }}</p>
+                <p><strong>Contacto:</strong> {{ station.contact or '-' }}</p>
+                <p><strong>Cómo llegar:</strong> {{ station.how_to_get or '-' }}</p>
                 <p><strong>Creada:</strong> {{ station.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
                 <p><strong>Última actualización:</strong> {{ station.updated_at.strftime('%d/%m/%Y %H:%M') }}</p>
             </div>

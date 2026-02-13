@@ -62,11 +62,15 @@ def view_station_details(station_id):
 def create_station():
     if request.method == 'POST':
         name = request.form.get('name')
+        island = request.form.get('island')
+        municipality = request.form.get('municipality')
         location = request.form.get('location')
-        latitude = request.form.get('latitude')
-        longitude = request.form.get('longitude')
+        coordinates = request.form.get('coordinates')
+        contact = request.form.get('contact')
+        how_to_get = request.form.get('how_to_get')
+        required_vehicle = request.form.get('required_vehicle')
+        measurement_type = request.form.get('measurement_type')
         status = request.form.get('status', 'activa')
-        installation_date = request.form.get('installation_date')
         
         # Validar que no exista
         if Station.query.filter_by(name=name).first():
@@ -76,11 +80,15 @@ def create_station():
         # Crear estación
         station = Station(
             name=name,
+            island=island,
+            municipality=municipality,
             location=location,
-            latitude=float(latitude) if latitude else None,
-            longitude=float(longitude) if longitude else None,
+            coordinates=coordinates,
+            contact=contact,
+            how_to_get=how_to_get,
+            required_vehicle=required_vehicle,
+            measurement_type=measurement_type,
             status=status,
-            installation_date=datetime.strptime(installation_date, '%Y-%m-%d') if installation_date else None,
             created_by=current_user.id
         )
         
@@ -106,13 +114,15 @@ def edit_station(station_id):
         old_status = station.status
         
         station.name = request.form.get('name')
+        station.island = request.form.get('island')
+        station.municipality = request.form.get('municipality')
         station.location = request.form.get('location')
-        station.latitude = float(request.form.get('latitude')) if request.form.get('latitude') else None
-        station.longitude = float(request.form.get('longitude')) if request.form.get('longitude') else None
+        station.coordinates = request.form.get('coordinates')
+        station.contact = request.form.get('contact')
+        station.how_to_get = request.form.get('how_to_get')
+        station.required_vehicle = request.form.get('required_vehicle')
+        station.measurement_type = request.form.get('measurement_type')
         station.status = request.form.get('status')
-        
-        if request.form.get('installation_date'):
-            station.installation_date = datetime.strptime(request.form.get('installation_date'), '%Y-%m-%d')
         
         # Registrar cambio de estado si hubo
         if old_status != station.status:

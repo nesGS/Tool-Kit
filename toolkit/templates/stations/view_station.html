@@ -39,9 +39,11 @@
                     <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
                     {% endif %}
                 </p>
-                <p><strong>Ubicación:</strong> {{ station.location }}</p>
+                <p><strong>Isla:</strong> {{ station.island }}</p>
+                <p><strong>Municipio:</strong> {{ station.municipality }}</p>
             </div>
             <div class="col-md-6">
+                <p><strong>Tipo de medida:</strong> {{ station.measurement_type }}</p>
                 <p><strong>Sensor instalado:</strong>
                     {% if station.sensors %}
                         {% set sensor = station.sensors[0] %}

@@ -16,14 +16,11 @@
                             <label for="sensor_type" class="form-label">Tipo de Sensor *</label>
                             <select class="form-control" id="sensor_type" name="sensor_type" required>
                                 <option value="">Seleccionar...</option>
+                                <option value="temperatura">Sísmico</option>
+                                <option value="temperatura">Geodésico</option>
+                                <option value="temperatura">Gravimétrico</option>
+                                <option value="temperatura">Gases</option>
                                 <option value="temperatura">Temperatura</option>
-                                <option value="humedad">Humedad</option>
-                                <option value="presion">Presión Atmosférica</option>
-                                <option value="viento">Velocidad del Viento</option>
-                                <option value="direccion_viento">Dirección del Viento</option>
-                                <option value="lluvia">Precipitación</option>
-                                <option value="radiacion">Radiación Solar</option>
-                                <option value="uv">Índice UV</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -31,7 +28,6 @@
                             <select class="form-control" id="status" name="status" required>
                                 <option value="operativo">Operativo</option>
                                 <option value="averiado">Averiado</option>
-                                <option value="en_calibracion">En Calibración</option>
                             </select>
                         </div>
                     </div>
@@ -40,7 +36,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="model" class="form-label">Modelo</label>
                             <input type="text" class="form-control" id="model" name="model" 
-                                   placeholder="Ej: DHT22">
+                                   placeholder="Ej: Nanometrix">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="serial_number" class="form-label">Número de Serie</label>
