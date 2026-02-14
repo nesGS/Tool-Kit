@@ -20,21 +20,19 @@
                             <option value="otros">Otros</option>
                         </select>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="key" class="form-label">Nombre del Detalle *</label>
-                        <input type="text" class="form-control" id="key" name="key" 
-                               placeholder="Ej: Panel solar" required>
+                        <input type="text" class="form-control" id="key" name="key" placeholder="Ej: Panel solar"
+                            required>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="value" class="form-label">Valor/Descripción *</label>
-                        <textarea class="form-control" id="value" name="value" rows="3" 
-                                  placeholder="Ej: Panel solar 100W" required></textarea>
+                        <textarea class="form-control" id="value" name="value" rows="3"
+                            placeholder="Ej: Panel solar 100W" required></textarea>
                     </div>
-                    
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('stations.view_station_details', station_id=station.id) }}" class="btn btn-secondary">Cancelar</a>
+                        <a href="{{ url_for('stations.view_station_details', station_id=station.id) }}"
+                            class="btn btn-secondary">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Añadir Detalle</button>
                     </div>
                 </form>
