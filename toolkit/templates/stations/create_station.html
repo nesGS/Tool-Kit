@@ -32,14 +32,9 @@
                             <label for="island" class="form-label">Isla *</label>
                             <select class="form-control" id="island" name="island" required>
                                 <option value="">Seleccionar...</option>
-                                <option value="Tenerife">Tenerife</option>
-                                <option value="Gran Canaria">Gran Canaria</option>
-                                <option value="Lanzarote">Lanzarote</option>
-                                <option value="Fuerteventura">Fuerteventura</option>
-                                <option value="La Palma">La Palma</option>
-                                <option value="La Gomera">La Gomera</option>
-                                <option value="El Hierro">El Hierro</option>
-                                <option value="Otros">Otros</option>
+                                {% for island in island_choices %}
+                                    <option value="{{ island }}">{{ island }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">

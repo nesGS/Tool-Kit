@@ -31,14 +31,9 @@
                         <div class="col-md-6 mb-3">
                             <label for="island" class="form-label">Isla *</label>
                             <select class="form-control" id="island" name="island" required>
-                                <option value="Tenerife" {% if station.island == 'Tenerife' %}selected{% endif %}>Tenerife</option>
-                                <option value="Gran Canaria" {% if station.island == 'Gran Canaria' %}selected{% endif %}>Gran Canaria</option>
-                                <option value="Lanzarote" {% if station.island == 'Lanzarote' %}selected{% endif %}>Lanzarote</option>
-                                <option value="Fuerteventura" {% if station.island == 'Fuerteventura' %}selected{% endif %}>Fuerteventura</option>
-                                <option value="La Palma" {% if station.island == 'La Palma' %}selected{% endif %}>La Palma</option>
-                                <option value="La Gomera" {% if station.island == 'La Gomera' %}selected{% endif %}>La Gomera</option>
-                                <option value="El Hierro" {% if station.island == 'El Hierro' %}selected{% endif %}>El Hierro</option>
-                                <option value="Otros" {% if station.island == 'Otros' %}selected{% endif %}>Otros</option>
+                                {% for island in island_choices %}
+                                    <option value="{{ island }}" {% if station.island == island %}selected{% endif %}>{{ island }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">

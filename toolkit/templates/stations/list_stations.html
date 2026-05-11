@@ -11,47 +11,71 @@
 </div>
 
 <div class="row">
-    {% for station in stations %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card">
+{% for island in island_choices %}
+    <div class="col-12 col-md-6 col-xl-3 mb-4">
+        <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">{{ station.name }}</h5>
-                {% if station.status == 'activa' %}
-                    <span class="badge bg-success">Activa</span>
-                {% elif station.status == 'averiada' %}
-                    <span class="badge bg-danger">Averiada</span>
-                {% elif station.status == 'mantenimiento' %}
-                    <span class="badge bg-warning">Mantenimiento</span>
-                {% else %}
-                    <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
-                {% endif %}
-            </div>
-            <div class="card-body">
-                <p><strong>Isla/Municipio:</strong> {{ station.island }} / {{ station.municipality }}</p>
-                <p><strong>Ubicación:</strong> {{ station.location }}</p>
-                <p><strong>Sensores:</strong> {{ station.sensors|length }}</p>
-                {% if station.has_active_breakdowns %}
-                    <div class="alert alert-danger py-2">
-                        <small>⚠ {{ station.active_breakdowns|length }} avería(s) activa(s)</small>
-                    </div>
-                {% endif %}
-                {% if station.has_active_interventions %}
-                    <div class="alert alert-info py-2">
-                        <small>🛠 {{ station.active_interventions|length }} intervención(es) programada(s)</small>
-                    </div>
-                {% endif %}
-                <a href="{{ url_for('stations.view_station', station_id=station.id) }}" class="btn btn-sm btn-primary">
-                    Ver Detalles
+                <h6 class="mb-0">{{ island }}</h6>
+                <a href="{{ url_for('stations.list_stations_by_island', island_slug=island_slugs[island]) }}" class="btn btn-sm btn-outline-primary">
+                    Ver
                 </a>
             </div>
+            <div class="card-body p-2">
+                {% if grouped_stations[island] %}
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Estación</th>
+                                    <th>Estado</th>
+                                    <th>Incidencias</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for station in grouped_stations[island] %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ url_for('stations.view_station', station_id=station.id) }}">{{ station.name }}</a>
+                                        </td>
+                                        <td>
+                                            {% if station.status == 'activa' %}
+                                                <span class="badge bg-success">Activa</span>
+                                            {% elif station.status == 'averiada' %}
+                                                <span class="badge bg-danger">Averiada</span>
+                                            {% elif station.status == 'mantenimiento' %}
+                                                <span class="badge bg-warning">Mantenimiento</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ station.status|capitalize }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if station.has_active_breakdowns %}
+                                                <span class="badge bg-danger">{{ station.active_breakdowns|length }} avería(s)</span>
+                                            {% endif %}
+                                            {% if station.has_active_interventions %}
+                                                <span class="badge bg-info text-dark">{{ station.active_interventions|length }} intervención(es)</span>
+                                            {% endif %}
+                                            {% if not station.has_active_breakdowns and not station.has_active_interventions %}
+                                                <span class="text-muted">Sin pendientes</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No hay estaciones en esta isla.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
-    {% else %}
-    <div class="col-12">
-        <div class="alert alert-info">
-            No hay estaciones registradas. <a href="{{ url_for('stations.create_station') }}">Crear la primera</a>
-        </div>
-    </div>
-    {% endfor %}
+{% endfor %}
 </div>
+
+{% if total_stations == 0 %}
+    <div class="alert alert-info">
+        No hay estaciones registradas. <a href="{{ url_for('stations.create_station') }}">Crear la primera</a>
+    </div>
+{% endif %}
 {% endblock %}

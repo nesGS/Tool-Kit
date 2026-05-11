@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
 from . import db
 from .station_models import Station, Sensor, Router, TechnicalDetail, Breakdown, Intervention, StationHistory
@@ -6,6 +6,29 @@ from .utils import admin_required
 from datetime import datetime
 
 stations = Blueprint('stations', __name__)
+
+ISLAND_CHOICES = [
+    'Tenerife',
+    'Gran Canaria',
+    'Lanzarote',
+    'Fuerteventura',
+    'La Palma',
+    'La Gomera',
+    'El Hierro',
+    'Otros',
+]
+ISLAND_ORDER = {name: index for index, name in enumerate(ISLAND_CHOICES)}
+ISLAND_SLUGS = {
+    'Tenerife': 'tenerife',
+    'Gran Canaria': 'gran-canaria',
+    'Lanzarote': 'lanzarote',
+    'Fuerteventura': 'fuerteventura',
+    'La Palma': 'la-palma',
+    'La Gomera': 'la-gomera',
+    'El Hierro': 'el-hierro',
+    'Otros': 'otros',
+}
+SLUG_TO_ISLAND = {slug: island for island, slug in ISLAND_SLUGS.items()}
 
 # Función auxiliar para registrar cambios
 def log_change(station_id, action, field=None, old_value=None, new_value=None, description=None):
@@ -24,8 +47,40 @@ def log_change(station_id, action, field=None, old_value=None, new_value=None, d
 @stations.route('/')
 @login_required
 def list_stations():
-    stations = Station.query.all()
-    return render_template('stations/list_stations.html', stations=stations)
+    all_stations = Station.query.all()
+    grouped_stations = {island: [] for island in ISLAND_CHOICES}
+
+    for station in all_stations:
+        island = station.island if station.island in grouped_stations else 'Otros'
+        grouped_stations[island].append(station)
+
+    for island in grouped_stations:
+        grouped_stations[island] = sorted(grouped_stations[island], key=lambda station: station.name.lower())
+
+    return render_template(
+        'stations/list_stations.html',
+        grouped_stations=grouped_stations,
+        total_stations=len(all_stations),
+        island_choices=ISLAND_CHOICES,
+        island_slugs=ISLAND_SLUGS
+    )
+
+
+@stations.route('/islands/<string:island_slug>')
+@login_required
+def list_stations_by_island(island_slug):
+    island_name = SLUG_TO_ISLAND.get(island_slug)
+    if not island_name:
+        abort(404)
+
+    stations = Station.query.filter_by(island=island_name).all()
+    stations = sorted(stations, key=lambda station: station.name.lower())
+
+    return render_template(
+        'stations/list_stations_by_island.html',
+        stations=stations,
+        island_name=island_name
+    )
 
 # Ver vista general de una estación
 @stations.route('/<int:station_id>')
@@ -102,7 +157,7 @@ def create_station():
         flash(f'Estación {name} creada exitosamente', 'success')
         return redirect(url_for('stations.view_station', station_id=station.id))
     
-    return render_template('stations/create_station.html')
+    return render_template('stations/create_station.html', island_choices=ISLAND_CHOICES)
 
 # Editar estación
 @stations.route('/<int:station_id>/edit', methods=['GET', 'POST'])
@@ -134,7 +189,7 @@ def edit_station(station_id):
         flash('Estación actualizada exitosamente', 'success')
         return redirect(url_for('stations.view_station', station_id=station.id))
     
-    return render_template('stations/edit_station.html', station=station)
+    return render_template('stations/edit_station.html', station=station, island_choices=ISLAND_CHOICES)
 
 # Eliminar estación (solo admin)
 @stations.route('/<int:station_id>/delete', methods=['POST'])
