@@ -27,6 +27,7 @@
                             <thead>
                                 <tr>
                                     <th>Estación</th>
+                                    <th>Departamento</th>
                                     <th>Estado</th>
                                     <th>Incidencias</th>
                                 </tr>
@@ -37,6 +38,7 @@
                                         <td>
                                             <a href="{{ url_for('stations.view_station', station_id=station.id) }}">{{ station.name }}</a>
                                         </td>
+                                        <td>{{ station.measurement_type or '-' }}</td>
                                         <td>
                                             {% if station.status == 'activa' %}
                                                 <span class="badge bg-success">Activa</span>

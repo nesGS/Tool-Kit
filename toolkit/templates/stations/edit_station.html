@@ -62,14 +62,12 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="measurement_type" class="form-label">Tipo de Medida</label>
-                            <select class="form-control" id="measurement_type" name="measurement_type">
+                            <label for="department" class="form-label">Departamento</label>
+                            <select class="form-control" id="department" name="department">
                                 <option value="" {% if not station.measurement_type %}selected{% endif %}>Seleccionar...</option>
-                                <option value="Gases" {% if station.measurement_type == 'Gases' %}selected{% endif %}>Gases</option>
-                                <option value="Térmica" {% if station.measurement_type == 'Térmica' %}selected{% endif %}>Térmica</option>
-                                <option value="Geodesia" {% if station.measurement_type == 'Geodesia' %}selected{% endif %}>Geodesia</option>
-                                <option value="Gravimetría" {% if station.measurement_type == 'Gravimetría' %}selected{% endif %}>Gravimetría</option>
-                                <option value="Sísmica" {% if station.measurement_type == 'Sísmica' %}selected{% endif %}>Sísmica</option>
+                                {% for department in department_choices %}
+                                    <option value="{{ department }}" {% if station.measurement_type == department %}selected{% endif %}>{{ department }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>

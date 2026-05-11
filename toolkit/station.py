@@ -18,6 +18,7 @@ ISLAND_CHOICES = [
     'Otros',
 ]
 ISLAND_ORDER = {name: index for index, name in enumerate(ISLAND_CHOICES)}
+DEPARTMENT_CHOICES = ['Geofísica', 'Geoquímica']
 ISLAND_SLUGS = {
     'Tenerife': 'tenerife',
     'Gran Canaria': 'gran-canaria',
@@ -124,7 +125,7 @@ def create_station():
         contact = request.form.get('contact')
         how_to_get = request.form.get('how_to_get')
         required_vehicle = request.form.get('required_vehicle')
-        measurement_type = request.form.get('measurement_type')
+        measurement_type = request.form.get('department')
         status = request.form.get('status', 'activa')
         
         # Validar que no exista
@@ -157,7 +158,11 @@ def create_station():
         flash(f'Estación {name} creada exitosamente', 'success')
         return redirect(url_for('stations.view_station', station_id=station.id))
     
-    return render_template('stations/create_station.html', island_choices=ISLAND_CHOICES)
+    return render_template(
+        'stations/create_station.html',
+        island_choices=ISLAND_CHOICES,
+        department_choices=DEPARTMENT_CHOICES
+    )
 
 # Editar estación
 @stations.route('/<int:station_id>/edit', methods=['GET', 'POST'])
@@ -176,7 +181,7 @@ def edit_station(station_id):
         station.contact = request.form.get('contact')
         station.how_to_get = request.form.get('how_to_get')
         station.required_vehicle = request.form.get('required_vehicle')
-        station.measurement_type = request.form.get('measurement_type')
+        station.measurement_type = request.form.get('department')
         station.status = request.form.get('status')
         
         # Registrar cambio de estado si hubo
@@ -189,7 +194,12 @@ def edit_station(station_id):
         flash('Estación actualizada exitosamente', 'success')
         return redirect(url_for('stations.view_station', station_id=station.id))
     
-    return render_template('stations/edit_station.html', station=station, island_choices=ISLAND_CHOICES)
+    return render_template(
+        'stations/edit_station.html',
+        station=station,
+        island_choices=ISLAND_CHOICES,
+        department_choices=DEPARTMENT_CHOICES
+    )
 
 # Eliminar estación (solo admin)
 @stations.route('/<int:station_id>/delete', methods=['POST'])

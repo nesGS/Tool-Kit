@@ -64,14 +64,12 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="measurement_type" class="form-label">Tipo de Medida</label>
-                            <select class="form-control" id="measurement_type" name="measurement_type">
+                            <label for="department" class="form-label">Departamento</label>
+                            <select class="form-control" id="department" name="department">
                                 <option value="">Seleccionar...</option>
-                                <option value="Gases">Gases</option>
-                                <option value="Térmica">Térmica</option>
-                                <option value="Geodesia">Geodesia</option>
-                                <option value="Gravimetría">Gravimetría</option>
-                                <option value="Sísmica">Sísmica</option>
+                                {% for department in department_choices %}
+                                    <option value="{{ department }}">{{ department }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
