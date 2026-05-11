@@ -43,7 +43,16 @@
                 <p><strong>Isla:</strong> {{ station.island }}</p>
                 <p><strong>Municipio:</strong> {{ station.municipality }}</p>
                 <p><strong>Ubicación:</strong> {{ station.location }}</p>
-                <p><strong>Coordenadas:</strong> {{ station.coordinates or '-' }}</p>
+                <p>
+                    <strong>Coordenadas:</strong>
+                    {% if station.coordinates %}
+                        <a href="https://www.google.com/maps?q={{ station.coordinates|replace(' ', '') }}" target="_blank" rel="noopener noreferrer">
+                            {{ station.coordinates }}
+                        </a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
                 <p><strong>Creada:</strong> {{ station.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
                 <p><strong>Última actualización:</strong> {{ station.updated_at.strftime('%d/%m/%Y %H:%M') }}</p>
             </div>

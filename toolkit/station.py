@@ -18,6 +18,16 @@ ISLAND_CHOICES = [
     'Otros',
 ]
 ISLAND_ORDER = {name: index for index, name in enumerate(ISLAND_CHOICES)}
+ISLAND_STATIONS_LAYOUT = [
+    'Tenerife',
+    'Gran Canaria',
+    'Lanzarote',
+    'El Hierro',
+    'Fuerteventura',
+    'La Palma',
+    'La Gomera',
+    'Otros',
+]
 DEPARTMENT_CHOICES = ['Geofísica', 'Geoquímica']
 ISLAND_SLUGS = {
     'Tenerife': 'tenerife',
@@ -62,7 +72,7 @@ def list_stations():
         'stations/list_stations.html',
         grouped_stations=grouped_stations,
         total_stations=len(all_stations),
-        island_choices=ISLAND_CHOICES,
+        island_choices=ISLAND_STATIONS_LAYOUT,
         island_slugs=ISLAND_SLUGS
     )
 
