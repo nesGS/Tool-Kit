@@ -15,14 +15,11 @@
                         <div class="col-md-6 mb-3">
                             <label for="sensor_type" class="form-label">Tipo de Sensor *</label>
                             <select class="form-control" id="sensor_type" name="sensor_type" required>
+                                <option value="sismico" {% if sensor.sensor_type == 'sismico' %}selected{% endif %}>Sísmico</option>
+                                <option value="geodesico" {% if sensor.sensor_type == 'geodesico' %}selected{% endif %}>Geodésico</option>
+                                <option value="gravimetrico" {% if sensor.sensor_type == 'gravimetrico' %}selected{% endif %}>Gravimétrico</option>
+                                <option value="gases" {% if sensor.sensor_type == 'gases' %}selected{% endif %}>Gases</option>
                                 <option value="temperatura" {% if sensor.sensor_type == 'temperatura' %}selected{% endif %}>Temperatura</option>
-                                <option value="humedad" {% if sensor.sensor_type == 'humedad' %}selected{% endif %}>Humedad</option>
-                                <option value="presion" {% if sensor.sensor_type == 'presion' %}selected{% endif %}>Presión Atmosférica</option>
-                                <option value="viento" {% if sensor.sensor_type == 'viento' %}selected{% endif %}>Velocidad del Viento</option>
-                                <option value="direccion_viento" {% if sensor.sensor_type == 'direccion_viento' %}selected{% endif %}>Dirección del Viento</option>
-                                <option value="lluvia" {% if sensor.sensor_type == 'lluvia' %}selected{% endif %}>Precipitación</option>
-                                <option value="radiacion" {% if sensor.sensor_type == 'radiacion' %}selected{% endif %}>Radiación Solar</option>
-                                <option value="uv" {% if sensor.sensor_type == 'uv' %}selected{% endif %}>Índice UV</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
