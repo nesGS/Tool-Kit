@@ -4,10 +4,19 @@
 <div class="text-center">
     <h1>Bienvenido a INVOLtool<br><img src="{{ url_for('static', filename='logo.png') }}" alt="Toolkit Logo" height="100"></h1>
     {% if current_user.is_authenticated %}
-        <p>Hola, {{ current_user.username }}!</p>
+        <div class="card mt-4 mb-3 mx-auto text-start" style="max-width: 900px;">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Hola, {{ current_user.username }}.</h5>
+                <p class="card-text mb-3">
+                    El objetivo de esta aplicación es centralizar el control y mantenimiento de la red de instrumentalización del INVOLCAN.
+                    
+                </p>
+            </div>
+        </div>
+
         <a href="{{ url_for('stations.list_stations') }}" class="btn btn-primary">Ir a estaciones</a>
 
-        <div class="card mt-4 text-start">
+        <div class="card mt-4 text-start mx-auto" style="max-width: 900px;">
             <div class="card-header bg-warning">
                 <strong>Estaciones con incidencias pendientes</strong>
             </div>
@@ -44,6 +53,44 @@
                 {% endif %}
             </div>
         </div>
+
+        <div class="modal fade" id="travelReminderModal" tabindex="-1" aria-labelledby="travelReminderModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-danger">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="travelReminderModalLabel">Recordatorio importante</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body text-start">
+                        Antes de cada viaje a otra isla, revisa si hay averías o intervenciones pendientes.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Entendido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modalElement = document.getElementById('travelReminderModal');
+                if (modalElement) {
+                    const mustShowAfterLogin = {{ 'true' if show_travel_reminder else 'false' }};
+                    const userKey = 'travelReminderLastShown_{{ current_user.id }}';
+                    const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+                    const now = Date.now();
+                    const lastShownRaw = localStorage.getItem(userKey);
+                    const lastShown = lastShownRaw ? parseInt(lastShownRaw, 10) : 0;
+                    const shouldShowWeekly = !lastShown || Number.isNaN(lastShown) || (now - lastShown) >= oneWeekMs;
+
+                    if (mustShowAfterLogin || shouldShowWeekly) {
+                        const reminderModal = new bootstrap.Modal(modalElement);
+                        reminderModal.show();
+                        localStorage.setItem(userKey, String(now));
+                    }
+                }
+            });
+        </script>
     {% else %}
         <br>
         <h3>Por favor inicia sesión</h3>

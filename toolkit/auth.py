@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
 from . import db
 from .models import User
@@ -19,6 +19,7 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
+            session['show_travel_reminder'] = True
             flash('Inicio de sesión exitoso', 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home.index'))
