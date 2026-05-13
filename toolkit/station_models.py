@@ -86,6 +86,14 @@ class Router(db.Model):
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @property
+    def sim_number(self):
+        return self.mac_address
+
+    @sim_number.setter
+    def sim_number(self, value):
+        self.mac_address = value
     
     def __repr__(self):
         return f'<Router {self.model} - {self.ip_address}>'

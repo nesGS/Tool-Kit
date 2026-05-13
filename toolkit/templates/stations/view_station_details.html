@@ -138,7 +138,7 @@
                     <tr>
                         <th>Modelo</th>
                         <th>IP</th>
-                        <th>MAC</th>
+                        <th>SIM</th>
                         <th>Serie</th>
                         <th>Firmware</th>
                         <th>Estado</th>
@@ -149,7 +149,7 @@
                     <tr>
                         <td>{{ station.router.model|capitalize }}</td>
                         <td>{{ station.router.ip_address or '-' }}</td>
-                        <td>{{ station.router.mac_address or '-' }}</td>
+                        <td>{{ station.router.sim_number or '-' }}</td>
                         <td>{{ station.router.serial_number or '-' }}</td>
                         <td>{{ station.router.firmware_version or '-' }}</td>
                         <td>

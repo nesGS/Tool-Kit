@@ -296,7 +296,7 @@ def configure_router(station_id):
         
         router.model = request.form.get('model')
         router.ip_address = request.form.get('ip_address')
-        router.mac_address = request.form.get('mac_address')
+        router.sim_number = request.form.get('sim_number')
         router.serial_number = request.form.get('serial_number')
         router.firmware_version = request.form.get('firmware_version')
         router.status = request.form.get('status', 'online')
